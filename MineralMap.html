@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Offset the vanishing point using padding</title>
+<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+<link href="https://api.mapbox.com/mapbox-gl-js/v2.8.2/mapbox-gl.css" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.8.2/mapbox-gl.js"></script>
+<style>
+body { margin: 0; padding: 0; }
+#map { position: absolute; top: 0; bottom: 0; width: 100%; }
+</style>
+</head>
+<body>
+<style>
+    .rounded-rect {
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 0 50px -25px black;
+    }
+
+    .flex-center {
+        position: absolute;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .flex-center.left {
+        left: 0px;
+    }
+
+    .flex-center.right {
+        right: 0px;
+    }
+
+    .sidebar-content {
+        position: absolute;
+        width: 95%;
+        height: 95%;
+        font-family: Arial, Helvetica, sans-serif;
+/*        font-size: 32px;*/
+        color: gray;
+    }
+
+    .sidebar-toggle {
+        position: absolute;
+        width: 1.3em;
+        height: 1.3em;
+        overflow: visible;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .sidebar-toggle.left {
+        right: -1.5em;
+        font-size: 32px;
+    }
+
+    .sidebar-toggle.right {
+        left: -1.5em;
+    }
+
+    .sidebar-toggle:hover {
+        color: #0aa1cf;
+        cursor: pointer;
+    }
+
+    .sidebar {
+        transition: transform 1s;
+        z-index: 1;
+        width: 300px;
+        height: 100%;
+    }
+    
+
+    /*
+  The sidebar styling has them "expanded" by default, we use CSS transforms to push them offscreen
+  The toggleSidebar() function removes this class from the element in order to expand it.
+*/
+    .left.collapsed {
+        transform: translateX(-295px);
+    }
+
+    .right.collapsed {
+        transform: translateX(295px);
+    }
+    
+    
+/*    table*/
+.tg  {border-collapse:collapse;border-spacing:0;border:none}
+.tg td{font-size:14px;}
+  overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg th{font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg .tg-as6v{text-align:right;vertical-align:bottom}
+.tg .tg-mcqj{font-weight:bold;text-align:left;vertical-align:top}
+.tg .tg-73oq{text-align:left;vertical-align:top}
+.tg .tg-kvxc{text-align:left;vertical-align:bottom}
+
+/*    end table */
+    
+    
+    #map h2{
+        font-size: 1em;
+    }
+    #map h2{
+        font-size: 1em;
+    }
+    
+</style>
+
+<div id="map">
+    <div id="left" class="sidebar flex-center left collapsed">
+        <div class="sidebar-content rounded-rect flex-center">
+
+            <div><img src="img/Wilson%20Center%20-%20Supply%20Chain%20Initiative.svg" alt="Winsol Center Logo">
+            <table class="tg">
+            <thead>
+              <tr>
+                <th class="tg-mcqj">MINERAL</th>
+                <th class="tg-mcqj">WORLD TOTAL</th>
+                <th class="tg-73oq"><span style="font-weight:bold">SELECTED</span><br><span style="font-weight:bold">COUNTRY</span><br><span id="hover_county" style="font-style:italic">Click on a country</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="tg-kvxc"><span style="font-weight:bold">Cobalt</span><input type="checkbox" id="Cobalt_cb" onclick="mineralToggle('Cobalt')" checked><br>Reserves<br>Processing</td>
+                <td class="tg-as6v">7,100,100 mt<br>131,434 mt<br></td>
+                <td class="tg-as6v"><span id="selected_cobalt"></span></td>
+              </tr>
+              <tr>
+                <td class="tg-73oq"><span style="font-weight:bold">Copper</span><input type="checkbox" id="Copper_cb" onclick="mineralToggle('Copper')" checked><br>Reserves<br>Processing</td>
+                <td class="tg-73oq"></td>
+                <td class="tg-73oq"><span id="selected_copper"></span></td>
+              </tr>
+              <tr>
+                <td class="tg-73oq"><span style="font-weight:bold">Lithium</span><input type="checkbox" id="Lithium_cb" onclick="mineralToggle('Lithium')" checked><br>Reserves<br>Processing</td>
+                <td class="tg-73oq"></td>
+                <td class="tg-73oq"></td>
+              </tr>
+              <tr>
+                <td class="tg-73oq"><span style="font-weight:bold">Nickel</span><input type="checkbox" id="Nickel_cb" onclick="mineralToggle('Nickel')" checked><br>Reserves<br>Processing</td>
+                <td class="tg-73oq"></td>
+                <td class="tg-73oq"><span id="selected_nickel"></span></td>
+              </tr>
+              <tr>
+                <td class="tg-73oq"><span style="font-weight:bold">Rare Earth</span><input type="checkbox" id="Rare Earth_cb" onclick="mineralToggle('Rare Earth')" checked><br>Reserves<br>Processing</td>
+                <td class="tg-73oq"></td>
+                <td class="tg-73oq"><span id="selected_rare"></span></td>
+              </tr>
+            </tbody>
+            </table>
+            </div>
+<!--            expand/collapse arrow-->
+            <div class="sidebar-toggle rounded-rect left" onclick="toggleSidebar('left')">
+                &rarr;
+            </div>
+        </div>
+    </div>
+<!--
+    <div id="right" class="sidebar flex-center right collapsed">
+        <div class="sidebar-content rounded-rect flex-center">
+            Right Sidebar
+            <div class="sidebar-toggle rounded-rect right" onclick="toggleSidebar('right')">
+                &larr;
+            </div>
+        </div>
+    </div>
+-->
+</div>
+
+<script>
+	mapboxgl.accessToken = 'pk.eyJ1IjoibWFyeWRhbWljbyIsImEiOiJjbDNsbWl6cTEwcWFlM2Jycm1lZjk2eGEyIn0.ZACbACYA25TGUS4jUSrV6A';
+    const center = [0, 0];
+    const map = new mapboxgl.Map({
+        container: 'map',
+        zoom: 0,
+        center: center,
+//        pitch: 0,
+        style: 'mapbox://styles/marydamico/cl3mk4ulw000714rvav214y90'
+    });
+
+//    new mapboxgl.Marker().setLngLat(center).addTo(map);
+
+    function toggleSidebar(id) {
+        const elem = document.getElementById(id);
+        // Add or remove the 'collapsed' CSS class from the sidebar element.
+        // Returns boolean "true" or "false" whether 'collapsed' is in the class list.
+        const collapsed = elem.classList.toggle('collapsed');
+        const padding = {};
+        // 'id' is 'right' or 'left'. When run at start, this object looks like: '{left: 300}';
+        padding[id] = collapsed ? 0 : 300; // 0 if collapsed, 300 px if not. This matches the width of the sidebars in the .sidebar CSS class.
+        // Use `map.easeTo()` with a padding option to adjust the map's center accounting for the position of sidebars.
+        map.easeTo({
+            padding: padding,
+            duration: 1000 // In ms. This matches the CSS transition duration property.
+        });
+    }
+
+    map.on('load', () => {
+//        toggleSidebar('left'); //starts sidebar closed
+        const countryDisplay = document.getElementById('hover_county');
+        
+         map.on('click', function(e) {
+            let l = map.getStyle().layers; // here you can get all the layers of the style
+//             console.log(l)
+
+            var clickedFeature = map.queryRenderedFeatures(e.point, {
+                layers: ['wilsonminerals'] // filter for features in this layer
+            }); 
+             
+            thisFeatureProps = clickedFeature[0].properties
+            console.log(thisFeatureProps)
+            document.getElementById('hover_county').innerHTML = thisFeatureProps.Country
+          }); // end on click
+        
+        
+     
+//        // rendered data info
+//        
+//        const features = map.queryRenderedFeatures();
+//        
+//        // Limit the number of properties we're displaying for
+//        // legibility and performance
+//        const displayProperties = [
+//            'layer',
+//            'Country',
+//            'Mineral',
+//            'Percentage'
+//        ];
+//        
+//        
+//        const displayFeatures = features.map((feat) => {
+//            const displayFeat = {};
+//            displayProperties.forEach((prop) => {
+//            displayFeat[prop] = feat[prop];
+//            });
+//            return displayFeat;
+//        });
+//        
+//        console.log(JSON.stringify(
+//            displayFeatures,
+//            null,
+//            2
+//            )
+//        );
+//// end rendered data info
+        
+    }); // end on load
+    
+//    var data = $.csv.toObjects("data/WilsonCenterMinerals.csv");
+//    console.log(layers)
+    
+    var displayMinerals = ["Copper", "Cobalt", "Nickel", "Lithium", "Rare Earth"];
+    
+    function mineralToggle(thisMineral){
+        console.log(thisMineral)
+//        console.log(thisMineral+"_cb")
+        if(document.getElementById(thisMineral+"_cb").checked == false ) {
+            // remove item from array 
+            displayMinerals = displayMinerals.filter(function(item) {
+                return item !== thisMineral
+            })
+        } else { 
+            // add item to array
+            displayMinerals.push(thisMineral)
+        }
+        // filter map for values in displayMinerals array
+        map.setFilter('wilsonminerals', ['in', 'Mineral'].concat(displayMinerals));
+        
+    };
+    
+    
+    
+    
+</script>
+
+</body>
+</html>
