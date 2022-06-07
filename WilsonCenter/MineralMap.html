@@ -70,7 +70,7 @@ body { margin: 0; padding: 0; }
     .sidebar {
         transition: transform 1s;
         z-index: 1;
-        width: 300px;
+        width: 400px;
         height: 100%;
     }
     
@@ -80,33 +80,36 @@ body { margin: 0; padding: 0; }
   The toggleSidebar() function removes this class from the element in order to expand it.
 */
     .left.collapsed {
-        transform: translateX(-295px);
+        transform: translateX(-395px);
     }
 
     .right.collapsed {
-        transform: translateX(295px);
+        transform: translateX(395px);
     }
     
     
 /*    table*/
-.tg  {border-collapse:collapse;border-spacing:0;border:none}
-.tg td{font-size:14px;}
+.infoTable  {border-collapse:collapse;border-spacing:0;border:none}
+.infoTable td{font-size:14px;}
   overflow:hidden;padding:10px 5px;word-break:normal;}
-.tg th{font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
-.tg .tg-as6v{text-align:right;vertical-align:bottom}
-.tg .tg-mcqj{font-weight:bold;text-align:left;vertical-align:top}
-.tg .tg-73oq{text-align:left;vertical-align:top}
-.tg .tg-kvxc{text-align:left;vertical-align:bottom}
+.infoTable th{font-size:16px;font-weight:bold;overflow:hidden;padding:10px 5px;text-align:center}
+.infoTable .col2{text-align:right;vertical-align:bottom;padding:5px}
+.infoTable .col1{text-align:left;vertical-align:top;padding:5px}
+.infoTable .numeric{text-align:right;vertical-align:bottom;padding:5px}
 
 /*    end table */
     
+/*    legend dots */
     
-    #map h2{
-        font-size: 1em;
-    }
-    #map h2{
-        font-size: 1em;
-    }
+    #dot_cobalt{color:#79a2be}
+    #dot_copper{color:orangered}
+    #dot_lithium{color:mediumpurple}
+    #dot_nickel{color:#e19095}
+    #dot_rare{color:#7db698}
+    
+/*    end ledeng dots*/
+    
+    
     
 </style>
 
@@ -115,39 +118,39 @@ body { margin: 0; padding: 0; }
         <div class="sidebar-content rounded-rect flex-center">
 
             <div><img src="img/Wilson%20Center%20-%20Supply%20Chain%20Initiative.svg" alt="Winsol Center Logo">
-            <table class="tg">
+            <table class="infoTable">
             <thead>
               <tr>
-                <th class="tg-mcqj">MINERAL</th>
-                <th class="tg-mcqj">WORLD TOTAL</th>
-                <th class="tg-73oq"><span style="font-weight:bold">SELECTED</span><br><span style="font-weight:bold">COUNTRY</span><br><span id="hover_county" style="font-style:italic">Click on a country</span></th>
+                <th>MINERAL</th>
+                <th>WORLD TOTAL</th>
+                <th>SELECTED<br>COUNTRY<br><span id="hover_county" style="font-style:italic">Click on a country</span></th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td class="tg-kvxc"><span style="font-weight:bold">Cobalt</span><input type="checkbox" id="Cobalt_cb" onclick="mineralToggle('Cobalt')" checked><br>Reserves<br>Processing</td>
-                <td class="tg-as6v">7,100,100 mt<br>131,434 mt<br></td>
-                <td class="tg-as6v"><span id="selected_cobalt"></span></td>
+                <td class="col1"><span style="font-weight:bold"><span id="dot_cobalt">&#11044; </span>Cobalt</span><input type="checkbox" id="Cobalt_cb" onclick="mineralToggle('Cobalt')" checked><br>Reserves<br>Processing<br>
+                <td class="col2">7,100,100 mt<br>131,434 mt<br></td>
+                <td class="numeric"><span id="selected_CobaltReserves"></span><br><span id="selected_CobaltProcessing"></span></td>
               </tr>
               <tr>
-                <td class="tg-73oq"><span style="font-weight:bold">Copper</span><input type="checkbox" id="Copper_cb" onclick="mineralToggle('Copper')" checked><br>Reserves<br>Processing</td>
-                <td class="tg-73oq"></td>
-                <td class="tg-73oq"><span id="selected_copper"></span></td>
+                <td class="col1"><span style="font-weight:bold"><span id="dot_copper">&#11044; </span>Copper</span><input type="checkbox" id="Copper_cb" onclick="mineralToggle('Copper')" checked><br>Reserves<br>Refining</td>
+                <td class="numeric"> 1,742,000 kt<br>47,230 kt</td>
+                  <td class="numeric"><span id="selected_CopperReserves"></span><br><span id="selected_CopperProcessing"></span><span id="selected_CopperRefining"></span></td>
               </tr>
               <tr>
-                <td class="tg-73oq"><span style="font-weight:bold">Lithium</span><input type="checkbox" id="Lithium_cb" onclick="mineralToggle('Lithium')" checked><br>Reserves<br>Processing</td>
-                <td class="tg-73oq"></td>
-                <td class="tg-73oq"></td>
+                <td class="col1"><span style="font-weight:bold"><span id="dot_lithium">&#11044; </span>Lithium</span><input type="checkbox" id="Lithium_cb" onclick="mineralToggle('Lithium')" checked><br>Reserves<br>Processing<br>
+                <td class="numeric"> 42,110,000 mt<br> 1,301,040 mt</td>
+                <td class="numeric"><span id="selected_LithiumReserves"></span><br><span id="selected_LithiumProcessing"></span></td>
               </tr>
               <tr>
-                <td class="tg-73oq"><span style="font-weight:bold">Nickel</span><input type="checkbox" id="Nickel_cb" onclick="mineralToggle('Nickel')" checked><br>Reserves<br>Processing</td>
-                <td class="tg-73oq"></td>
-                <td class="tg-73oq"><span id="selected_nickel"></span></td>
+                <td class="col1"><span style="font-weight:bold"><span id="dot_nickel">&#11044; </span>Nickel</span><input type="checkbox" id="Nickel_cb" onclick="mineralToggle('Nickel')" checked><br>Reserves<br>Refining</td>
+                <td class="numeric"> 189,589,230 kt<br>4,828 kt</td>
+                <td class="numeric"><span id="selected_NickelReserves"></span><br><span id="selected_NickelProcessing"></span><span id="selected_NickelRefining"></span></td>
               </tr>
               <tr>
-                <td class="tg-73oq"><span style="font-weight:bold">Rare Earth</span><input type="checkbox" id="Rare Earth_cb" onclick="mineralToggle('Rare Earth')" checked><br>Reserves<br>Processing</td>
-                <td class="tg-73oq"></td>
-                <td class="tg-73oq"><span id="selected_rare"></span></td>
+                <td class="col1"><span style="font-weight:bold"><span id="dot_rare">&#11044; </span>Rare Earth</span><input type="checkbox" id="Rare Earth_cb" onclick="mineralToggle('Rare Earth')" checked><br>Reserves<br>Refining</td>
+                <td class="numeric"> 231,640,000 mt<br>92,190 kt</td>
+                <td class="numeric"><span id="selected_Rare EarthReserves"></span><br><span id="selected_Rare EarthProcessing"></span><span id="selected_Rare EarthRefining"></span></td>
               </tr>
             </tbody>
             </table>
@@ -202,9 +205,33 @@ body { margin: 0; padding: 0; }
 //        toggleSidebar('left'); //starts sidebar closed
         const countryDisplay = document.getElementById('hover_county');
         
+//        populateWorldTotals();  TO AUTOMATE!
+        
          map.on('click', function(e) {
-            let l = map.getStyle().layers; // here you can get all the layers of the style
+ //           let l = map.getStyle().layers; // get all the layers of the style
 //             console.log(l)
+             
+             // clear panel
+             document.getElementById('hover_county').innerHTML = "&nbsp"
+             var displayMinerals = ["Copper", "Cobalt", "Nickel", "Lithium", "Rare Earth"];
+             for (item of displayMinerals){
+                 var elem = document.getElementById("selected_"+item+"Reserves");
+                    if(elem !== null && elem !== 'undefined' ) {
+                      document.getElementById("selected_"+item+"Reserves").innerHTML = "&nbsp"
+                 }
+                 elem = document.getElementById("selected_"+item+"Processing");
+                    if(elem !== null && elem !== 'undefined' ) {
+                      document.getElementById("selected_"+item+"Processing").innerHTML = "&nbsp"
+                 }
+                 elem = document.getElementById("selected_"+item+"Refining");
+                    if(elem !== null && elem !== 'undefined' ) {
+                      document.getElementById("selected_"+item+"Refining").innerHTML = "&nbsp"
+                    }
+                
+//                 document.getElementById("selected_"+item+"Reserves").innerHTML = "&nbsp"
+//                 document.getElementById("selected_"+item+"Processing").innerHTML = "&nbsp"
+//                 document.getElementById("selected_"+item+"Refining").innerHTML = "&nbsp"
+            }
 
             var clickedFeature = map.queryRenderedFeatures(e.point, {
                 layers: ['wilsonminerals'] // filter for features in this layer
@@ -212,45 +239,26 @@ body { margin: 0; padding: 0; }
              
             thisFeatureProps = clickedFeature[0].properties
             console.log(thisFeatureProps)
-            document.getElementById('hover_county').innerHTML = thisFeatureProps.Country
+            const thisCountry = thisFeatureProps.Country
+            
+            // set country label in info panel
+            document.getElementById('hover_county').innerHTML = thisCountry
+             
+             
+            // get realted data vaues for selected country
+            const relatedFeatures = map.querySourceFeatures("composite", {
+                sourceLayer: "WilsonMinerals4-0hbtuj",
+                filter: ['==', 'Country', thisCountry]
+            });
+             
+            //console.log(relatedFeatures)
+             
+            const uniqueFeatures = getUniqueFeatures(relatedFeatures, "country-level");
+            console.log(uniqueFeatures);
+             
           }); // end on click
-        
-        
-     
-//        // rendered data info
-//        
-//        const features = map.queryRenderedFeatures();
-//        
-//        // Limit the number of properties we're displaying for
-//        // legibility and performance
-//        const displayProperties = [
-//            'layer',
-//            'Country',
-//            'Mineral',
-//            'Percentage'
-//        ];
-//        
-//        
-//        const displayFeatures = features.map((feat) => {
-//            const displayFeat = {};
-//            displayProperties.forEach((prop) => {
-//            displayFeat[prop] = feat[prop];
-//            });
-//            return displayFeat;
-//        });
-//        
-//        console.log(JSON.stringify(
-//            displayFeatures,
-//            null,
-//            2
-//            )
-//        );
-//// end rendered data info
-        
     }); // end on load
     
-//    var data = $.csv.toObjects("data/WilsonCenterMinerals.csv");
-//    console.log(layers)
     
     var displayMinerals = ["Copper", "Cobalt", "Nickel", "Lithium", "Rare Earth"];
     
@@ -271,8 +279,56 @@ body { margin: 0; padding: 0; }
         
     };
     
+
+    function getUniqueFeatures(features, scale) {
+        const uniqueItems = new Set();
+
+
+        // Because features come from tiled vector data,
+        // feature geometries may be split
+        // or duplicated across tile boundaries.
+        // As a result, features may appear
+        // multiple times in query results.
+        const uniqueFeatures = [];
+        for (const feature of features){ 
+            const concatItem = feature.properties["Mineral"] + feature.properties["Res_Ref_Proc"];
+            // check for combo of Country, Mineral, and Resource Type in the list
+            if (!uniqueItems.has(concatItem)) {
+                uniqueItems.add(concatItem);
+                uniqueFeatures.push(feature);
+                //console.log(concatItem)
+                 if(scale = "country-level"){
+                    // add item info to panel
+                    var tableValue = feature.properties["Amount"].toLocaleString() + " " + feature.properties["Unit"];
+                    tableValue = tableValue.replace("kilotons", "kt"); // update units if found
+                    tableValue = tableValue.replace("metric tons", "mt"); // update units if found
+                     
+                     // populate value if it exists
+                     var elem = document.getElementById("selected_"+concatItem);
+                        if(elem !== null && elem !== 'undefined' ) {
+                          document.getElementById("selected_"+concatItem).innerHTML = tableValue;
+                     } 
+                     
+                 } else if(scale = "global-level"){
+                    // add item info to panel
+                    //TO DO
+                 }
+
+            }
+        }    
+        return uniqueFeatures;
+    }
     
-    
+    function populateWorldTotals(){
+        
+        // get data vaues for whole world
+        const globalFeatures = map.querySourceFeatures("composite", {
+            sourceLayer: "WilsonMinerals4-0hbtuj",
+        });
+        
+        getUniqueFeatures(globalFeatures, "global-level");
+        
+    }
     
 </script>
 
