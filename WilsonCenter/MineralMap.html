@@ -147,30 +147,30 @@ body { margin: 0; padding: 0; }
             </thead>
             <tbody>
               <tr id="sidebar-Cobalt-row">
-                <td class="col1"><span style="font-weight:bold"><span id="dot_cobalt">&#11044; </span>Cobalt</span><input type="checkbox" id="Cobalt_cb" onclick="mineralToggle('Cobalt'),''" checked>
+                <td class="col1"><input type="checkbox" id="Cobalt_cb" onclick="mineralToggle('Cobalt'),''" checked><span style="font-weight:bold"><span id="dot_cobalt">&#11044; </span>Cobalt</span>
                     <br>Reserves
                     <br>Processing<br>
-                <td class="col2">7,100,100 mt<br>131,434 mt<br></td>
+                <td class="col2">7,128,000 mt<br>131,434 mt<br></td>
                 <td class="numeric"><span id="selected_CobaltReserves"></span><br><span id="selected_CobaltProcessing"></span></td>
               </tr>
               <tr id="sidebar-Copper-row">
-                <td class="col1"><span style="font-weight:bold"><span id="dot_copper">&#11044; </span>Copper</span><input type="checkbox" id="Copper_cb" onclick="mineralToggle('Copper'),''" checked><br>Reserves<br>Refining</td>
-                <td class="numeric"> 1,742,000 kt<br>47,230 kt</td>
+                <td class="col1"><input type="checkbox" id="Copper_cb" onclick="mineralToggle('Copper'),''" checked><span style="font-weight:bold"><span id="dot_copper">&#11044; </span>Copper</span><br>Reserves<br>Refining</td>
+                <td class="numeric">871,000 kt<br>23,615 kt</td>
                   <td class="numeric"><span id="selected_CopperReserves"></span><br><span id="selected_CopperProcessing"></span><span id="selected_CopperRefining"></span></td>
               </tr>
               <tr id="sidebar-Lithium-row">
-                <td class="col1"><span style="font-weight:bold"><span id="dot_lithium">&#11044; </span>Lithium</span><input type="checkbox" id="Lithium_cb" onclick="mineralToggle('Lithium'),''" checked><br>Reserves<br>Processing<br>
-                <td class="numeric"> 42,110,000 mt<br> 1,301,040 mt</td>
+                <td class="col1"><input type="checkbox" id="Lithium_cb" onclick="mineralToggle('Lithium'),''" checked><span style="font-weight:bold"><span id="dot_lithium">&#11044; </span>Lithium</span><br>Reserves<br>Processing<br>
+                <td class="numeric">21,055,000 mt<br>350,020 mt</td>
                 <td class="numeric"><span id="selected_LithiumReserves"></span><br><span id="selected_LithiumProcessing"></span></td>
               </tr>
               <tr id="sidebar-Nickel-row">
-                <td class="col1"><span style="font-weight:bold"><span id="dot_nickel">&#11044; </span>Nickel</span><input type="checkbox" id="Nickel_cb" onclick="mineralToggle('Nickel'),''" checked><br>Reserves<br>Refining</td>
-                <td class="numeric"> 189,589,230 kt<br>4,828 kt</td>
+                <td class="col1"><input type="checkbox" id="Nickel_cb" onclick="mineralToggle('Nickel'),''" checked><span style="font-weight:bold"><span id="dot_nickel">&#11044; </span>Nickel</span><br>Reserves<br>Refining</td>
+                <td class="numeric"> 93,900,000 kt<br>2,414 kt</td>
                 <td class="numeric"><span id="selected_NickelReserves"></span><br><span id="selected_NickelProcessing"></span><span id="selected_NickelRefining"></span></td>
               </tr>
               <tr id="sidebar-Rare Earth-row">
-                <td class="col1"><span style="font-weight:bold"><span id="dot_rare">&#11044; </span>Rare Earth</span><input type="checkbox" id="Rare Earth_cb" onclick="mineralToggle('Rare Earth'),''" checked><br>Reserves<br>Refining</td>
-                <td class="numeric"> 231,640,000 mt<br>92,190 kt</td>
+                <td class="col1"><input type="checkbox" id="Rare Earth_cb" onclick="mineralToggle('Rare Earth'),''" checked><span style="font-weight:bold"><span id="dot_rare">&#11044; </span>Rare Earth</span><br>Reserves<br>Refining</td>
+                <td class="numeric"> 115,820,000 mt<br>46,095 kt</td>
                 <td class="numeric"><span id="selected_Rare EarthReserves"></span><br><span id="selected_Rare EarthProcessing"></span><span id="selected_Rare EarthRefining"></span></td>
               </tr>
               <tr>
@@ -205,7 +205,6 @@ body { margin: 0; padding: 0; }
 <script>
 	mapboxgl.accessToken = 'pk.eyJ1IjoibWFyeWRhbWljbyIsImEiOiJjbDNsbWl6cTEwcWFlM2Jycm1lZjk2eGEyIn0.ZACbACYA25TGUS4jUSrV6A';
     const center = [0, 0];
-    // Set bounds to San Francisco, California.
     const bounds = [
         [-160, -90], // Southwest coordinates
         [160, 90] // Northeast coordinates
@@ -220,8 +219,11 @@ body { margin: 0; padding: 0; }
         style: 'mapbox://styles/marydamico/cl3mk4ulw000714rvav214y90'
     });
 
-//    new mapboxgl.Marker().setLngLat(center).addTo(map);
+    // Minral list within map
+    var displayMinerals = ["Copper", "Cobalt", "Nickel", "Lithium", "Rare Earth"];
+    var displayMineralType = ["Reserves", "Refining", "Processing"];
 
+    // sidebar slide functionality
     function toggleSidebar(id) {
         const elem = document.getElementById(id);
         const sb_button = document.getElementById("expand-sidebar-button");
@@ -241,7 +243,8 @@ body { margin: 0; padding: 0; }
             duration: 1000 // In ms. This matches the CSS transition duration property.
         });
     }
-
+    
+    
     map.on('load', () => {
         toggleSidebar('left'); //starts sidebar closed
         const countryDisplay = document.getElementById('hover_county');
@@ -312,7 +315,7 @@ body { margin: 0; padding: 0; }
 
         // Copy coordinates array.
         const coordinates = e.features[0].geometry.coordinates.slice();
-        const description = e.features[0].properties.Country;
+            const description = '<b>'+e.features[0].properties.Country + '</b><br><i> Click to view details</i>';
 
         // Ensure that if the map is zoomed out such that multiple
         // copies of the feature are visible, the popup appears
@@ -329,57 +332,12 @@ body { margin: 0; padding: 0; }
         map.on('mouseleave', 'wilsonminerals', () => {
             map.getCanvas().style.cursor = '';
             popup.remove();
-        }); // end on mouseleave
-        
-        
-
-        
-//        map.on('mousemove', (e) => {
-//const features = map.queryRenderedFeatures(e.point);
-//            const coordinates = e.features[0].geometry.coordinates.slice();
-//        const description = e.features[0].properties.description;
-// 
-//// Limit the number of properties we're displaying for
-//// legibility and performance
-//const displayProperties = [
-//'type',
-//'properties',
-//'id',
-//'layer',
-//'source',
-//'sourceLayer',
-//'state'
-//];
-// 
-//const displayFeatures = features.map((feat) => {
-//const displayFeat = {};
-//displayProperties.forEach((prop) => {
-//displayFeat[prop] = feat[prop];
-//});
-//return displayFeat;
-//});
-// 
-//// Write object as string with an indent of two spaces.
-////document.getElementById('features').innerHTML = JSON.stringify(
-////displayFeatures,
-////null,
-////2
-////);
-//            
-//popup.setLngLat(coordinates).setHTML(JSON.stringify(
-//displayFeatures,
-//null,
-//2
-//)).addTo(map);
-//            
-//});
-        
+        }); // end on mouseleave 
         
     }); // end on load
     
     
-    var displayMinerals = ["Copper", "Cobalt", "Nickel", "Lithium", "Rare Earth"];
-    var displayMineralType = ["Reserves", "Refining", "Processing"];
+
     
     function mineralToggle(thisMineral,thisType){
         console.log(thisMineral)
@@ -455,7 +413,7 @@ body { margin: 0; padding: 0; }
                 uniqueItems.add(concatItem);
                 uniqueFeatures.push(feature);
                 //console.log(concatItem)
-                 if(scale = "country-level"){
+                 if(scale == "country-level"){
                     // add item info to panel
                     var tableValue = feature.properties["Amount"].toLocaleString() + " " + feature.properties["Unit"];
                     tableValue = tableValue.replace("kilotons", "kt"); // update units if found
@@ -467,7 +425,7 @@ body { margin: 0; padding: 0; }
                           document.getElementById("selected_"+concatItem).innerHTML = tableValue;
                      } 
                      
-                 } else if(scale = "global-level"){
+                 } else if(scale == "global-level"){
                     // add item info to panel
                     //TO DO
                  }
@@ -483,7 +441,7 @@ body { margin: 0; padding: 0; }
         const globalFeatures = map.querySourceFeatures("composite", {
             sourceLayer: "WilsonMinerals4-0hbtuj",
         });
-        
+        console.log(globalFeatures)
         getUniqueFeatures(globalFeatures, "global-level");
         
     }
