@@ -146,30 +146,30 @@ body { margin: 0; padding: 0; }
               </tr>
             </thead>
             <tbody>
+              <tr id="sidebar-Lithium-row">
+                <td class="col1"><input type="checkbox" id="Lithium_cb" onclick="mineralToggle('Lithium'),''" checked><span style="font-weight:bold"><span id="dot_lithium">&#11044; </span>Lithium</span><br>Reserves<br>Processing<br>
+                <td class="numeric">21,055,000 mt<br>350,020 mt</td>
+                <td class="numeric"><span id="selected_LithiumReserves"></span><br><span id="selected_LithiumProcessing"></span></td>
+              </tr>
               <tr id="sidebar-Cobalt-row">
-                <td class="col1"><input type="checkbox" id="Cobalt_cb" onclick="mineralToggle('Cobalt'),''" checked><span style="font-weight:bold"><span id="dot_cobalt">&#11044; </span>Cobalt</span>
+                <td class="col1"><input type="checkbox" id="Cobalt_cb" onclick="mineralToggle('Cobalt'),''"><span style="font-weight:bold"><span id="dot_cobalt">&#11044; </span>Cobalt</span>
                     <br>Reserves
                     <br>Processing<br>
                 <td class="col2">7,128,000 mt<br>131,434 mt<br></td>
                 <td class="numeric"><span id="selected_CobaltReserves"></span><br><span id="selected_CobaltProcessing"></span></td>
               </tr>
               <tr id="sidebar-Copper-row">
-                <td class="col1"><input type="checkbox" id="Copper_cb" onclick="mineralToggle('Copper'),''" checked><span style="font-weight:bold"><span id="dot_copper">&#11044; </span>Copper</span><br>Reserves<br>Refining</td>
+                <td class="col1"><input type="checkbox" id="Copper_cb" onclick="mineralToggle('Copper'),''"><span style="font-weight:bold"><span id="dot_copper">&#11044; </span>Copper</span><br>Reserves<br>Refining</td>
                 <td class="numeric">871,000 kt<br>23,615 kt</td>
                   <td class="numeric"><span id="selected_CopperReserves"></span><br><span id="selected_CopperProcessing"></span><span id="selected_CopperRefining"></span></td>
               </tr>
-              <tr id="sidebar-Lithium-row">
-                <td class="col1"><input type="checkbox" id="Lithium_cb" onclick="mineralToggle('Lithium'),''" checked><span style="font-weight:bold"><span id="dot_lithium">&#11044; </span>Lithium</span><br>Reserves<br>Processing<br>
-                <td class="numeric">21,055,000 mt<br>350,020 mt</td>
-                <td class="numeric"><span id="selected_LithiumReserves"></span><br><span id="selected_LithiumProcessing"></span></td>
-              </tr>
               <tr id="sidebar-Nickel-row">
-                <td class="col1"><input type="checkbox" id="Nickel_cb" onclick="mineralToggle('Nickel'),''" checked><span style="font-weight:bold"><span id="dot_nickel">&#11044; </span>Nickel</span><br>Reserves<br>Refining</td>
+                <td class="col1"><input type="checkbox" id="Nickel_cb" onclick="mineralToggle('Nickel'),''"><span style="font-weight:bold"><span id="dot_nickel">&#11044; </span>Nickel</span><br>Reserves<br>Refining</td>
                 <td class="numeric"> 93,900,000 kt<br>2,414 kt</td>
                 <td class="numeric"><span id="selected_NickelReserves"></span><br><span id="selected_NickelProcessing"></span><span id="selected_NickelRefining"></span></td>
               </tr>
               <tr id="sidebar-Rare Earth-row">
-                <td class="col1"><input type="checkbox" id="Rare Earth_cb" onclick="mineralToggle('Rare Earth'),''" checked><span style="font-weight:bold"><span id="dot_rare">&#11044; </span>Rare Earth</span><br>Reserves<br>Refining</td>
+                <td class="col1"><input type="checkbox" id="Rare Earth_cb" onclick="mineralToggle('Rare Earth'),''" ><span style="font-weight:bold"><span id="dot_rare">&#11044; </span>Rare Earth</span><br>Reserves<br>Refining</td>
                 <td class="numeric"> 115,820,000 mt<br>46,095 kt</td>
                 <td class="numeric"><span id="selected_Rare EarthReserves"></span><br><span id="selected_Rare EarthProcessing"></span><span id="selected_Rare EarthRefining"></span></td>
               </tr>
@@ -220,8 +220,9 @@ body { margin: 0; padding: 0; }
     });
 
     // Minral list within map
-    var displayMinerals = ["Copper", "Cobalt", "Nickel", "Lithium", "Rare Earth"];
-    var displayMineralType = ["Reserves", "Refining", "Processing"];
+//    var displayMinerals = ["Copper", "Cobalt", "Nickel", "Lithium", "Rare Earth"];
+    var displayMinerals = ["Lithium"];// "Copper", "Cobalt", "Nickel", "Rare Earth"];
+    var displayProcessingType = ["Reserves", "Refining", "Processing"];
 
     // sidebar slide functionality
     function toggleSidebar(id) {
@@ -258,24 +259,15 @@ body { margin: 0; padding: 0; }
              // clear panel
              document.getElementById('hover_county').innerHTML = "&nbsp"
              var displayMinerals = ["Copper", "Cobalt", "Nickel", "Lithium", "Rare Earth"];
+            
              for (item of displayMinerals){
-                 var elem = document.getElementById("selected_"+item+"Reserves");
+                 displayProcessingType.map(function (ProcessingType) {
+                    var elem = document.getElementById("selected_"+item+ProcessingType);
                     if(elem !== null && elem !== 'undefined' ) {
-                      document.getElementById("selected_"+item+"Reserves").innerHTML = "&nbsp"
-                 }
-                 elem = document.getElementById("selected_"+item+"Processing");
-                    if(elem !== null && elem !== 'undefined' ) {
-                      document.getElementById("selected_"+item+"Processing").innerHTML = "&nbsp"
-                 }
-                 elem = document.getElementById("selected_"+item+"Refining");
-                    if(elem !== null && elem !== 'undefined' ) {
-                      document.getElementById("selected_"+item+"Refining").innerHTML = "&nbsp"
-                    }
-                
-//                 document.getElementById("selected_"+item+"Reserves").innerHTML = "&nbsp"
-//                 document.getElementById("selected_"+item+"Processing").innerHTML = "&nbsp"
-//                 document.getElementById("selected_"+item+"Refining").innerHTML = "&nbsp"
-            }
+                      document.getElementById("selected_"+item+ProcessingType).innerHTML = "&nbsp"
+                    };
+                 });
+              }; // end for display minerals
 
             var clickedFeature = map.queryRenderedFeatures(e.point, {
                 layers: ['wilsonminerals'] // filter for features in this layer
@@ -283,7 +275,7 @@ body { margin: 0; padding: 0; }
              
             if (typeof clickedFeature[0] !== 'undefined') {
                 thisFeatureProps = clickedFeature[0].properties
-//                console.log(thisFeatureProps)
+                // console.log(thisFeatureProps)
                 const thisCountry = thisFeatureProps.Country
 
                 // set country label in info panel
@@ -308,6 +300,11 @@ body { margin: 0; padding: 0; }
         closeButton: false,
         closeOnClick: false
         });
+        
+        // sort layer with smallest items on top
+        map.setLayoutProperty('wilsonminerals','circle-sort-key',["*", -1, ["get", "Percent"]])
+        // start map only showing lithium, per request. NOTE: if changing this filter, set the checkboxes to match
+        map.setFilter('wilsonminerals', ['in', 'Mineral','Lithium']);
         
         map.on('mouseenter', 'wilsonminerals', (e) => {
         // Change the cursor style as a UI indicator.
@@ -334,8 +331,17 @@ body { margin: 0; padding: 0; }
             popup.remove();
         }); // end on mouseleave 
         
+
+        
+        
     }); // end on load
     
+//    map.once('idle', (e) => {
+//    // do things the first time the map idles
+//        // start map only showing lithium, per request
+//        map.setFilter('wilsonminerals', ['in', 'Mineral','Lithium']);
+//});
+//    
     
 
     
@@ -366,34 +372,32 @@ body { margin: 0; padding: 0; }
         
         // get type
        if(typeof thisType !== 'undefined'){
-        if(document.getElementById(thisType+"_cb").checked == false ) {
-            // remove item from array 
-            displayMineralType = displayMineralType.filter(function(item) {
-                return item !== thisType
-            })
-        } else { 
-            // add item to array
-            displayMineralType.push(thisType)
-        }
+            if(document.getElementById(thisType+"_cb").checked == false ) {
+                // remove item from array 
+                displayProcessingType = displayProcessingType.filter(function(item) {
+                    return item !== thisType
+                })
+            } else { 
+                // add item to array
+                displayProcessingType.push(thisType)
+            }
        }
-        
-        
+            
         
         // filter map for values in displayMinerals array
         // map.setFilter('wilsonminerals', ['in', 'Mineral'].concat(displayMinerals));   // by mineral type alone 
         var mineralFilter=[
             "all",
             ["in", 'Mineral'].concat(displayMinerals),
-            ["in", "Res_Ref_Proc"].concat(displayMineralType),
+            ["in", "Res_Ref_Proc"].concat(displayProcessingType),
         ]
         console.log("filtering minerals: " + displayMinerals)
-        console.log("filtering type: " + displayMineralType)
+        console.log("filtering type: " + displayProcessingType)
         
         map.setFilter('wilsonminerals', mineralFilter)
         
         
-        
-    };
+    };// end mineral toggle
     
 
     function getUniqueFeatures(features, scale) {
