@@ -151,29 +151,31 @@ body { margin: 0; padding: 0; }
                 <td class="numeric">21,055,000 mt<br>350,020 mt</td>
                 <td class="numeric"><span id="selected_LithiumReserves"></span><br><span id="selected_LithiumProcessing"></span></td>
               </tr>
-              <tr id="sidebar-Cobalt-row">
+              <tr id="sidebar-Cobalt-row" class="sidebar-selection">
                 <td class="col1"><input type="checkbox" id="Cobalt_cb" onclick="mineralToggle('Cobalt'),''"><span style="font-weight:bold"><span id="dot_cobalt">&#11044; </span>Cobalt</span>
                     <br>Reserves
                     <br>Processing<br>
                 <td class="col2">7,128,000 mt<br>131,434 mt<br></td>
                 <td class="numeric"><span id="selected_CobaltReserves"></span><br><span id="selected_CobaltProcessing"></span></td>
               </tr>
-              <tr id="sidebar-Copper-row">
+              <tr id="sidebar-Copper-row" class="sidebar-selection">
                 <td class="col1"><input type="checkbox" id="Copper_cb" onclick="mineralToggle('Copper'),''"><span style="font-weight:bold"><span id="dot_copper">&#11044; </span>Copper</span><br>Reserves<br>Refining</td>
                 <td class="numeric">871,000 kt<br>23,615 kt</td>
                   <td class="numeric"><span id="selected_CopperReserves"></span><br><span id="selected_CopperProcessing"></span><span id="selected_CopperRefining"></span></td>
               </tr>
-              <tr id="sidebar-Nickel-row">
+              <tr id="sidebar-Nickel-row" class="sidebar-selection">
                 <td class="col1"><input type="checkbox" id="Nickel_cb" onclick="mineralToggle('Nickel'),''"><span style="font-weight:bold"><span id="dot_nickel">&#11044; </span>Nickel</span><br>Reserves<br>Refining</td>
                 <td class="numeric"> 93,900,000 kt<br>2,414 kt</td>
                 <td class="numeric"><span id="selected_NickelReserves"></span><br><span id="selected_NickelProcessing"></span><span id="selected_NickelRefining"></span></td>
               </tr>
-              <tr id="sidebar-Rare Earth-row">
+              <tr id="sidebar-Rare Earth-row" class="sidebar-selection">
                 <td class="col1"><input type="checkbox" id="Rare Earth_cb" onclick="mineralToggle('Rare Earth'),''" ><span style="font-weight:bold"><span id="dot_rare">&#11044; </span>Rare Earth</span><br>Reserves<br>Refining</td>
                 <td class="numeric"> 115,820,000 mt<br>46,095 kt</td>
                 <td class="numeric"><span id="selected_Rare EarthReserves"></span><br><span id="selected_Rare EarthProcessing"></span><span id="selected_Rare EarthRefining"></span></td>
               </tr>
               <tr>
+                  
+                  // checkboxes for the processing type
                   <input type="checkbox" id="Reserves_cb" onclick="mineralToggle('','Reserves')" checked>Reserves
                   <input type="checkbox" id="Processing_cb" onclick="mineralToggle('','Processing')" checked>Processing
                   <input type="checkbox" id="Refining_cb" onclick="mineralToggle('','Refining')" checked>Refining
