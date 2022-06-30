@@ -221,8 +221,8 @@ body { margin: 0; padding: 0; }
         style: 'mapbox://styles/marydamico/cl3mk4ulw000714rvav214y90'
     });
 
-    // Minral list within map
-//    var displayMinerals = ["Copper", "Cobalt", "Nickel", "Lithium", "Rare Earth"];
+    // Mineral list within map
+    //    var displayMinerals = ["Copper", "Cobalt", "Nickel", "Lithium", "Rare Earth"];
     var displayMinerals = ["Lithium"];// "Copper", "Cobalt", "Nickel", "Rare Earth"];
     var displayProcessingType = ["Reserves", "Refining", "Processing"];
 
@@ -272,35 +272,51 @@ body { margin: 0; padding: 0; }
               }; // end for display minerals
 
             var clickedFeature = map.queryRenderedFeatures(e.point, {
-                layers: ['wilsonminerals'] // filter for features in this layer
+                layers: ['wilsonminerals','country-boundaries'] // filter for features in this layer
             }); 
              
             if (typeof clickedFeature[0] !== 'undefined') {
                 thisFeatureProps = clickedFeature[0].properties
-                // console.log(thisFeatureProps)
-                const thisCountry = thisFeatureProps.Country
+                //console.log(thisFeatureProps)
+                
+//                var thisCountry;
+                // Check for "Country" field - implying Mineral layer was clicked
+                // or for "name_en" field - implying the country layer was clicked
+//                if (typeof thisFeatureProps.Country !== 'undefined') {
+//                    thisCountry = thisFeatureProps.Country
+//                } else if (typeof thisFeatureProps.name_en !== 'undefined') {
+//                    thisCountry = thisFeatureProps.name_en    
+                     
+                    var thisCountry = (typeof thisFeatureProps.Country !== 'undefined') ? thisFeatureProps.Country : thisFeatureProps.name_en; 
+                    
 
-                // set country label in info panel
-                document.getElementById('hover_county').innerHTML = thisCountry
-
-
+                
                 // get realted data vaues for selected country
-                const relatedFeatures = map.querySourceFeatures("composite", {
+                const relatedData = map.querySourceFeatures("composite", {
                     sourceLayer: "WilsonMinerals4-0hbtuj",
-                    filter: ['==', 'Country', thisCountry]
+                    filter: ['==', 'Country', getWilsonCountries(thisCountry)]
                 });
 
-                //console.log(relatedFeatures)
+                //console.log(relatedData)
+                
+                // check for data for the selected country
+                if ( relatedData.length > 0 ){                             
+                    // set country label in info panel
+                    document.getElementById('hover_county').innerHTML = thisCountry;
 
-                const uniqueFeatures = getUniqueFeatures(relatedFeatures, "country-level");
-                console.log(uniqueFeatures);
+                    const uniqueFeatures = getUniqueFeatures(relatedData, "country-level");
+                    // console.log(uniqueFeatures);
+                } else {
+                    document.getElementById('hover_county').innerHTML = "Click on a country";
+                }
+                
              }; // end if click is !undefined
           }); // end on click
         
         // Create a popup, but don't add it to the map yet.
         const popup = new mapboxgl.Popup({
-        closeButton: false,
-        closeOnClick: false
+            closeButton: false,
+            closeOnClick: false
         });
         
         // sort layer with smallest items on top
@@ -309,23 +325,25 @@ body { margin: 0; padding: 0; }
         map.setFilter('wilsonminerals', ['in', 'Mineral','Lithium']);
         
         map.on('mouseenter', 'wilsonminerals', (e) => {
-        // Change the cursor style as a UI indicator.
-        map.getCanvas().style.cursor = 'pointer';
+            // Change the cursor style as a UI indicator.
+            map.getCanvas().style.cursor = 'pointer';
 
-        // Copy coordinates array.
-        const coordinates = e.features[0].geometry.coordinates.slice();
+            // Copy coordinates array.
+            const coordinates = e.features[0].geometry.coordinates.slice();
             const description = '<b>'+e.features[0].properties.Country + '</b><br><i> Click to view details</i>';
 
-        // Ensure that if the map is zoomed out such that multiple
-        // copies of the feature are visible, the popup appears
-        // over the copy being pointed to.
-        while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-        coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-        }
+            // Ensure that if the map is zoomed out such that multiple
+            // copies of the feature are visible, the popup appears
+            // over the copy being pointed to.
+            while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+            }
 
-        // Populate the popup and set its coordinates
-        // based on the feature found.
-        popup.setLngLat(coordinates).setHTML(description).addTo(map);
+            // Populate the popup and set its coordinates
+            // based on the feature found.
+            popup.setLngLat(coordinates).setHTML(description).addTo(map);
+            
+//            console.log(coordinates)
         }); // end on mouseenter
 
         map.on('mouseleave', 'wilsonminerals', () => {
@@ -333,23 +351,54 @@ body { margin: 0; padding: 0; }
             popup.remove();
         }); // end on mouseleave 
         
+        map.on('mousemove', 'country-boundaries', (e) => {
+            thisCountry = e.features[0].properties.name_en;
+            console.log(thisCountry)
+            
+            var mineralFilter=[
+                "all",
+                ["in", 'Mineral'].concat(displayMinerals),
+                ["in", "Res_Ref_Proc"].concat(displayProcessingType),
+                ['==', 'Country', getWilsonCountries(thisCountry)]
+            ]
+            
+             
+            // get realted data vaues for selected country
+            const relatedData = map.querySourceFeatures("composite", {
+                sourceLayer: "WilsonMinerals4-0hbtuj",
+                filter: mineralFilter
+            });
 
+            //   console.log(relatedData)
+            
+            
+            if ( relatedData.length > 0 ){                             
+                // Change the cursor style as a UI indicator.
+                map.getCanvas().style.cursor = 'pointer';
+                const description = '<b>'+ thisCountry + '</b><br><i> Click to view details</i>';             
+                 
+                // Create coordinates array.
+                const coordinates = [relatedData[0].geometry.coordinates]
+                
+                // Populate the popup and set its coordinates
+                // based on the feature found.
+                popup.setLngLat(coordinates[0]).setHTML(description).addTo(map);
+            }
+        }); // end on mouseenter
+        
+        map.on('mouseleave', 'country-boundaries', () => {
+            map.getCanvas().style.cursor = '';
+            popup.remove();
+        }); // end on mouseleave 
         
         
     }); // end on load
     
-//    map.once('idle', (e) => {
-//    // do things the first time the map idles
-//        // start map only showing lithium, per request
-//        map.setFilter('wilsonminerals', ['in', 'Mineral','Lithium']);
-//});
-//    
-    
 
     
     function mineralToggle(thisMineral,thisType){
-        console.log(thisMineral)
-        console.log(thisType)
+//        console.log(thisMineral)
+//        console.log(thisType)
 //        console.log(thisMineral+"_cb")
 //        console.log(thisMineral+" " + thisType)
         
@@ -393,8 +442,8 @@ body { margin: 0; padding: 0; }
             ["in", 'Mineral'].concat(displayMinerals),
             ["in", "Res_Ref_Proc"].concat(displayProcessingType),
         ]
-        console.log("filtering minerals: " + displayMinerals)
-        console.log("filtering type: " + displayProcessingType)
+//        console.log("filtering minerals: " + displayMinerals)
+//        console.log("filtering type: " + displayProcessingType)
         
         map.setFilter('wilsonminerals', mineralFilter)
         
@@ -450,6 +499,21 @@ body { margin: 0; padding: 0; }
         console.log(globalFeatures)
         getUniqueFeatures(globalFeatures, "global-level");
         
+    }
+    
+    function getWilsonCountries(thisCountry){
+        // reaplce as needed, only USA for now, but add cases to switch statement for other differences
+         switch(thisCountry) {
+             case 'United States':
+               thisCountry = 'USA';
+               break;
+             case 'Democratic Republic of the Congo':
+                thisCountry = 'DRC';
+                break;
+             default:
+             // code block
+        }
+        return thisCountry;
     }
     
 </script>
