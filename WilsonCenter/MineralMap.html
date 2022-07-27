@@ -159,16 +159,8 @@ body { margin: 0; padding: 0; }
     }
     
 /*    table*/
-.infoTable  {width: 100%;
-    clear:left;}
-/*.infoTable td{font-size:14px;}*/
-  overflow:hidden;padding:10px 5px;word-break:normal;}
+.infoTable  {width: 100%;clear:left;}
 .infoTable th{font-size:16px;font-weight:bold;overflow:hidden;padding:10px 5px;text-align:center; line-height: 12px;}
-/*.infoTable thead{line-height: 100%;}*/
-/*.infoTable .left-th{text-align:left}*/
-/*.infoTable .col2{text-align:right;vertical-align:bottom;padding:5px}*/
-/*.infoTable .col1{text-align:left;vertical-align:top;padding:5px}*/
-/*.infoTable .numeric{text-align:right;vertical-align:bottom;padding:5px}*/
 .click {font-size: smaller;font-style: italic; line-height: 80%;}
 /*    end table */
     
@@ -254,8 +246,9 @@ input:checked + .slider:before {
   border-radius: 50%;
 }
 
-#Lithium_Reserves_Label{
-    
+/*popup*/
+.mapboxgl-popup, .mapboxgl-popup-content {
+  pointer-events:none !important;
 }
     
 </style>
@@ -561,8 +554,9 @@ input:checked + .slider:before {
         // keep track of map's current filter
         // start map only showing checked boxes
         var mapFilter =  [];
-        var args = pollCheckboxes();
+        var args = pollCheckboxes('undefined');
         mapFilter = buildFilter(args);
+        // console.log(mapFilter)
         map.setFilter('wilsonminerals',['any', mapFilter]);
 
         
@@ -590,6 +584,7 @@ input:checked + .slider:before {
 
         map.on('mouseleave', 'wilsonminerals', () => {
             map.getCanvas().style.cursor = '';
+            popup.setLngLat([0,0])// movepopup out of the way to prevent mouse interaction
             popup.remove();
         }); // end on mouseleave 
         
@@ -600,13 +595,13 @@ input:checked + .slider:before {
 //            //clear filter
 //            var mineralFilter = "";
 //            // filter map for all currently checked minerals
-//            var args = pollCheckboxes();
-//            mapFilter = buildFilter(args);
+            var args = pollCheckboxes(getWilsonCountries(thisCountry));
+            mouseFilter = buildFilter(args);
 //            map.setFilter('wilsonminerals',['any', mapFilter]);
             
 //            console.log(mapFilter)
             // limit mouse interaction to countries found in the current filter
-            var mouseFilter = ('all',mapFilter,['==', 'Country', getWilsonCountries(thisCountry)])
+//            var mouseFilter = ('all',mapFilter,['==', 'Country', getWilsonCountries(thisCountry)])
             //console.log(mouseFilter)
           
             // get realted mineral data vaues for selected country
@@ -631,9 +626,7 @@ input:checked + .slider:before {
                 // based on the feature found.
                 popup.setLngLat(coordinates[0]).setHTML(description).addTo(map);
             } 
-            else {
-                 popup.remove();
-            }
+            
         }); // end on mouseenter
         
         map.on('mouseleave', 'country-boundaries', () => {
@@ -649,47 +642,103 @@ input:checked + .slider:before {
     function mineralToggle(thisMineral,thisType){
         updateThisLabelColor(thisMineral,thisType)
         //reset map
-        var args = pollCheckboxes();
+        var args = pollCheckboxes('undefined');
         mapFilter = buildFilter(args);
         map.setFilter('wilsonminerals',['any', mapFilter]);
         
     };// end mineral toggle
     
+    function buildClause(thisMineral, thisType){
+            thisClause = ["all", ['==', 'Mineral', thisMineral],['==', "Res_Ref_Proc", thisType]]
+//        } 
+//        else {
+//            console.log("country found")
+//            thisClause = ["all", ['==', 'Mineral', thisMineral],['==', "Res_Ref_Proc", thisType],['==', 'Country', getWilsonCountries(thisCountry)]]
+//        }
+//        
+        return thisClause;
+    } 
     
-    function pollCheckboxes(){
+    function buildMouseClause(thisMineral, thisType, thisCountry){
+            thisClause = ["all", ['==', 'Mineral', thisMineral],['==', "Res_Ref_Proc", thisType],['==', 'Country', getWilsonCountries(thisCountry)]]    
+        return thisClause;
+    }
+    
+    function pollCheckboxes(thisCountry){
         //clear filter
          var args = []; 
+        
 
         // poll checkboxes
         if (document.getElementById('Lithium_Reserves_cb').checked == true){
-            args.push(["all", ['==', 'Mineral', "Lithium"],['==', "Res_Ref_Proc", "Reserves"]])
+            if (thisCountry == "undefined"){
+                args.push(buildClause("Lithium","Reserves"))
+            } else {
+                args.push(buildMouseClause("Lithium","Reserves", thisCountry))
+            }         
         } 
         if (document.getElementById('Lithium_Refining_cb').checked == true){
-            args.push(["all", ['==', 'Mineral', "Lithium"],['==', "Res_Ref_Proc", "Refining"]])
+             if (thisCountry == "undefined"){
+                args.push(buildClause("Lithium","Refining"))
+            } else {
+                args.push(buildMouseClause("Lithium","Refining", thisCountry))
+            }  
         }
         if (document.getElementById('Cobalt_Reserves_cb').checked == true){
-            args.push(["all", ['==', 'Mineral', "Cobalt"],['==', "Res_Ref_Proc", "Reserves"]])
+            if (thisCountry == "undefined"){
+            args.push(buildClause("Cobalt","Reserves"))
+            } else {
+                args.push(buildMouseClause("Cobalt","Reserves", thisCountry))
+            }  
         } 
-        if (document.getElementById('Cobalt_Processing_cb').checked == true){            
-            args.push(["all", ['==', 'Mineral', "Cobalt"],['==', "Res_Ref_Proc", "Processing"]])
+        if (document.getElementById('Cobalt_Processing_cb').checked == true){
+            if (thisCountry == "undefined"){
+            args.push(buildClause("Cobalt","Processing"))
+            } else {
+                args.push(buildMouseClause("Cobalt","Processing", thisCountry))
+            }  
         }
         if (document.getElementById('Copper_Reserves_cb').checked == true){
-            args.push(["all", ['==', 'Mineral', "Copper"],['==', "Res_Ref_Proc", "Reserves"]])
+            if (thisCountry == "undefined"){
+            args.push(buildClause("Copper","Reserves"))
+            } else {
+                args.push(buildMouseClause("Copper","Reserves", thisCountry))
+            } 
         }
         if (document.getElementById('Copper_Refining_cb').checked == true){
-            args.push(["all", ['==', 'Mineral', "Copper"],['==', "Res_Ref_Proc", "Refining"]])
+            if (thisCountry == "undefined"){
+            args.push(buildClause("Copper","Refining"))
+            } else {
+                args.push(buildMouseClause("Copper","Refining", thisCountry))
+            }
         } 
         if (document.getElementById('Nickel_Reserves_cb').checked == true){
-            args.push(["all", ['==', 'Mineral', "Nickel"],['==', "Res_Ref_Proc", "Reserves"]])
+            if (thisCountry == "undefined"){
+            args.push(buildClause("Nickel","Reserves"))
+            } else {
+                args.push(buildMouseClause("Nickel","Reserves", thisCountry))
+            }
         }
         if (document.getElementById('Nickel_Refining_cb').checked == true){
-            args.push(["all", ['==', 'Mineral', "Nickel"],['==', "Res_Ref_Proc", "Refining"]])
+            if (thisCountry == "undefined"){
+            args.push(buildClause("Nickel","Refining"))
+            } else {
+                args.push(buildMouseClause("Nickel","Refining", thisCountry))
+            }
         } 
         if (document.getElementById('Rare Earth_Reserves_cb').checked == true){
-            args.push(["all", ['==', 'Mineral', "Rare Earth"],['==', "Res_Ref_Proc", "Reserves"]])
+            if (thisCountry == "undefined"){
+            args.push(buildClause("Rare Earth","Reserves"))
+            } else {
+                args.push(buildMouseClause("Rare Earth","Reserves", thisCountry))
+            }
         }
         if (document.getElementById('Rare Earth_Refining_cb').checked == true){
-            args.push(["all", ['==', 'Mineral', "Rare Earth"],['==', "Res_Ref_Proc", "Refining"]])
+            if (thisCountry == "undefined"){
+            args.push(buildClause("Rare Earth","Refining"))
+            } else {
+                args.push(buildMouseClause("Rare Earth","Refining", thisCountry))
+            }
         } 
         
         return args;
