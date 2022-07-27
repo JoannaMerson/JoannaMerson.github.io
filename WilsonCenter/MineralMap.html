@@ -98,10 +98,10 @@ body { margin: 0; padding: 0; }
     }
     
     img::after {
-  content: "";
-  clear: both;
-  display: table;
-}
+      content: "";
+      clear: both;
+      display: table;
+    }
 
     /*
   The sidebar styling has them "expanded" by default, we use CSS transforms to push them offscreen
@@ -144,7 +144,10 @@ body { margin: 0; padding: 0; }
         text-align: right;
 /*        padding-right: 10px;*/
     }
+
     
+/*    table*/
+        
 /*    header row*/
     .th{
         font-weight: bold;
@@ -157,8 +160,6 @@ body { margin: 0; padding: 0; }
         font-size:13px;
             vertical-align: bottom;
     }
-    
-/*    table*/
 .infoTable  {width: 100%;clear:left;}
 .infoTable th{font-size:16px;font-weight:bold;overflow:hidden;padding:10px 5px;text-align:center; line-height: 12px;}
 .click {font-size: smaller;font-style: italic; line-height: 80%;}
@@ -445,15 +446,53 @@ input:checked + .slider:before {
         [-160, -90], // Southwest coordinates
         [160, 90] // Northeast coordinates
     ];
+    
+
+    var initalFilter = [
+    "any",
+    [
+        "all",
+        [
+            "==",
+            "Mineral",
+            "Lithium"
+        ],
+        [
+            "==",
+            "Res_Ref_Proc",
+            "Reserves"
+        ]
+    ],
+    [
+        "all",
+        [
+            "==",
+            "Mineral",
+            "Lithium"
+        ],
+        [
+            "==",
+            "Res_Ref_Proc",
+            "Refining"
+        ]
+    ]
+]
     const map = new mapboxgl.Map({
+        attributionControl: false,
         container: 'map',
         zoom: 0,
         center: center,
         maxZoom: 2.5,
         minZoom: 0,
         maxBounds: bounds,
-        style: 'mapbox://styles/marydamico/cl3mk4ulw000714rvav214y90'
+        style: 'mapbox://styles/marydamico/cl3mk4ulw000714rvav214y90',
+        filter: initalFilter
+        
     });
+    
+    map.addControl(new mapboxgl.AttributionControl({
+        customAttribution: ' <a href="https://tombolomapsdesign.com/" target="_blank">Tombolo Maps</a> '
+    }));
 
     // Mineral list within map
     var allMinerals = ["Copper", "Cobalt", "Nickel", "Lithium", "Rare Earth"];
@@ -553,7 +592,7 @@ input:checked + .slider:before {
         var mapFilter =  [];
         var args = pollCheckboxes('undefined');
         mapFilter = buildFilter(args);
-        // console.log(mapFilter)
+        console.log(mapFilter)
         map.setFilter('wilsonminerals',['any', mapFilter]);
 
         
@@ -637,92 +676,38 @@ input:checked + .slider:before {
         
     };// end mineral toggle
     
-    function buildClause(thisMineral, thisType){
-            thisClause = ["all", ['==', 'Mineral', thisMineral],['==', "Res_Ref_Proc", thisType]]       
-        return thisClause;
-    } 
-    
-    function buildMouseClause(thisMineral, thisType, thisCountry){
-            thisClause = ["all", ['==', 'Mineral', thisMineral],['==', "Res_Ref_Proc", thisType],['==', 'Country', getWilsonCountries(thisCountry)]]    
-        return thisClause;
-    }
-    
+    // poll data's checkbox values, if each exists in the DOM, get checkbox value, and add clause to filter
     function pollCheckboxes(thisCountry){
         //clear filter
          var args = []; 
         
-
-        // poll checkboxes
-        if (document.getElementById('Lithium_Reserves_cb').checked == true){
-            if (thisCountry == "undefined"){
-                args.push(buildClause("Lithium","Reserves"))
-            } else {
-                args.push(buildMouseClause("Lithium","Reserves", thisCountry))
-            }         
-        } 
-        if (document.getElementById('Lithium_Refining_cb').checked == true){
-             if (thisCountry == "undefined"){
-                args.push(buildClause("Lithium","Refining"))
-            } else {
-                args.push(buildMouseClause("Lithium","Refining", thisCountry))
-            }  
-        }
-        if (document.getElementById('Cobalt_Reserves_cb').checked == true){
-            if (thisCountry == "undefined"){
-            args.push(buildClause("Cobalt","Reserves"))
-            } else {
-                args.push(buildMouseClause("Cobalt","Reserves", thisCountry))
-            }  
-        } 
-        if (document.getElementById('Cobalt_Processing_cb').checked == true){
-            if (thisCountry == "undefined"){
-            args.push(buildClause("Cobalt","Processing"))
-            } else {
-                args.push(buildMouseClause("Cobalt","Processing", thisCountry))
-            }  
-        }
-        if (document.getElementById('Copper_Reserves_cb').checked == true){
-            if (thisCountry == "undefined"){
-            args.push(buildClause("Copper","Reserves"))
-            } else {
-                args.push(buildMouseClause("Copper","Reserves", thisCountry))
+        // get data vaues from mineral layer for whole world 
+        const globalFeatures = map.querySourceFeatures("composite", {
+            sourceLayer: "WilsonMinerals4-0hbtuj",
+        });
+        
+        totalFeatures = getUniqueFeatures(globalFeatures, "global-level");
+    
+        for (feature of totalFeatures){
+            thisMineral = feature.properties["Mineral"];
+            thisType = feature.properties["Res_Ref_Proc"]
+           
+            // evaluate checkbox values
+            var elem = document.getElementById(thisMineral+"_"+thisType+"_cb")
+            if(elem !== null && elem !== 'undefined' ) {                       
+                if (document.getElementById(thisMineral+"_"+thisType+"_cb").checked == true){
+                    if (thisCountry == "undefined"){
+                        // build a clause for the filter based on the checkboxes
+                        thisClause = ["all", ['==', 'Mineral', thisMineral],['==', "Res_Ref_Proc", thisType]]       
+                        args.push(thisClause)
+                    } else {
+                        // build a clause for the filter based on the checkboxes and a country (e.g. for mouseovver)
+                        thisClause = ["all", ['==', 'Mineral', thisMineral],['==', "Res_Ref_Proc", thisType],['==', 'Country', getWilsonCountries(thisCountry)]]   
+                        args.push(thisClause)
+                    }         
+                } 
             } 
-        }
-        if (document.getElementById('Copper_Refining_cb').checked == true){
-            if (thisCountry == "undefined"){
-            args.push(buildClause("Copper","Refining"))
-            } else {
-                args.push(buildMouseClause("Copper","Refining", thisCountry))
-            }
-        } 
-        if (document.getElementById('Nickel_Reserves_cb').checked == true){
-            if (thisCountry == "undefined"){
-            args.push(buildClause("Nickel","Reserves"))
-            } else {
-                args.push(buildMouseClause("Nickel","Reserves", thisCountry))
-            }
-        }
-        if (document.getElementById('Nickel_Refining_cb').checked == true){
-            if (thisCountry == "undefined"){
-            args.push(buildClause("Nickel","Refining"))
-            } else {
-                args.push(buildMouseClause("Nickel","Refining", thisCountry))
-            }
-        } 
-        if (document.getElementById('Rare Earth_Reserves_cb').checked == true){
-            if (thisCountry == "undefined"){
-            args.push(buildClause("Rare Earth","Reserves"))
-            } else {
-                args.push(buildMouseClause("Rare Earth","Reserves", thisCountry))
-            }
-        }
-        if (document.getElementById('Rare Earth_Refining_cb').checked == true){
-            if (thisCountry == "undefined"){
-            args.push(buildClause("Rare Earth","Refining"))
-            } else {
-                args.push(buildMouseClause("Rare Earth","Refining", thisCountry))
-            }
-        } 
+        }   
         
         return args;
     }
@@ -793,33 +778,32 @@ input:checked + .slider:before {
     
     function populateWorldTotals(){
         
-        // get data vaues for whole world
+        // get data vaues from mineral layer for whole world 
         const globalFeatures = map.querySourceFeatures("composite", {
             sourceLayer: "WilsonMinerals4-0hbtuj",
         });
         
         totalFeatures = getUniqueFeatures(globalFeatures, "global-level");
-//        console.log(totalFeatures)
+        // console.log(totalFeatures)
         
+
         for (feature of totalFeatures){
+            
+
+            
             thisMineral = feature.properties["Mineral"];
             thisType = feature.properties["Res_Ref_Proc"]
             thisAmount = feature.properties["Amount"].toLocaleString() + " " + feature.properties["Unit"];
             thisAmount = thisAmount.replace("kilotons", "kt"); // update units if found
             thisAmount = thisAmount.replace("metric tons", "mt"); // update units if found
-            document.getElementById(thisMineral+"_"+thisType+"_worldTotal").innerHTML = thisAmount
+                            
+            // populate values in table if it exists                
+            var elem = document.getElementById(thisMineral+"_"+thisType+"_worldTotal")
+            if(elem !== null && elem !== 'undefined' ) {                       
+                document.getElementById(thisMineral+"_"+thisType+"_worldTotal").innerHTML = thisAmount;
+            }
             
-        }
-        
-//         for (item of allMinerals){
-//                 displayProcessingType.map(function (ProcessingType) {
-//                    var elem = document.getElementById("selected_"+item+ProcessingType);
-//                    if(elem !== null && elem !== 'undefined' ) {
-//                      document.getElementById(item+"_"+ProcessingType+"_worldTotal").innerHTML = "Total"
-//                    };
-//                 });
-//              }; // end for display minerals
-        
+        }        
     }
     
     function getWilsonCountries(thisCountry){
