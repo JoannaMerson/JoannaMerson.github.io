@@ -460,10 +460,7 @@ input:checked + .slider:before {
     var displayMinerals = ["Lithium"];// "Copper", "Cobalt", "Nickel", "Rare Earth"];
     var displayProcessingType = ["Reserves", "Refining", "Processing"];
     
-    var displayList = [["Lithium","Reserves"],["Lithium","Refining"]];
 
-    
-    
     // sidebar slide functionality
     function toggleSidebar(id) {
         const elem = document.getElementById(id);
@@ -584,7 +581,6 @@ input:checked + .slider:before {
 
         map.on('mouseleave', 'wilsonminerals', () => {
             map.getCanvas().style.cursor = '';
-            popup.setLngLat([0,0])// movepopup out of the way to prevent mouse interaction
             popup.remove();
         }); // end on mouseleave 
         
@@ -592,17 +588,10 @@ input:checked + .slider:before {
             thisCountry = e.features[0].properties.name_en;
 //            console.log(thisCountry)
             
-//            //clear filter
-//            var mineralFilter = "";
-//            // filter map for all currently checked minerals
+
+//          // filter map for all currently checked minerals
             var args = pollCheckboxes(getWilsonCountries(thisCountry));
             mouseFilter = buildFilter(args);
-//            map.setFilter('wilsonminerals',['any', mapFilter]);
-            
-//            console.log(mapFilter)
-            // limit mouse interaction to countries found in the current filter
-//            var mouseFilter = ('all',mapFilter,['==', 'Country', getWilsonCountries(thisCountry)])
-            //console.log(mouseFilter)
           
             // get realted mineral data vaues for selected country
             const relatedData = map.querySourceFeatures("composite", {
@@ -649,13 +638,7 @@ input:checked + .slider:before {
     };// end mineral toggle
     
     function buildClause(thisMineral, thisType){
-            thisClause = ["all", ['==', 'Mineral', thisMineral],['==', "Res_Ref_Proc", thisType]]
-//        } 
-//        else {
-//            console.log("country found")
-//            thisClause = ["all", ['==', 'Mineral', thisMineral],['==', "Res_Ref_Proc", thisType],['==', 'Country', getWilsonCountries(thisCountry)]]
-//        }
-//        
+            thisClause = ["all", ['==', 'Mineral', thisMineral],['==', "Res_Ref_Proc", thisType]]       
         return thisClause;
     } 
     
@@ -787,11 +770,7 @@ input:checked + .slider:before {
                           document.getElementById("selected_"+concatItem).innerHTML = tableValue;
                      } 
                      
-                 } else if(scale == "global-level"){
-                    // add item info to panel
-                    //TO DO
-                 }
-
+                 } 
             }
         }    
         return uniqueFeatures;
