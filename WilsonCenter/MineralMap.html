@@ -29,6 +29,10 @@ body { margin: 0; padding: 0; }
     .flex-center.left {
         left: 0px;
     }
+    
+    .left{
+        text-align: left;
+    }
 
     .flex-center.right {
         right: 0px;
@@ -59,15 +63,17 @@ body { margin: 0; padding: 0; }
         align-items: center;
     }
 
+    /*arrow*/
     .sidebar-toggle.left {
         right: -1.5em;
-        font-size: 32px;
+        font-size: 28px;
     }
 
+    /*"X"*/
     .sidebar-toggle.close {
-        font-size: 32px;
+        font-size: 20px;
         position: relative; 
-        right: 0;
+        float:right;
 }
 
     .sidebar-toggle:hover {
@@ -86,6 +92,16 @@ body { margin: 0; padding: 0; }
         color:DarkGray;
     }
     
+    #wilson_logo{
+        max-width: 200px;
+        float: left;
+    }
+    
+    img::after {
+  content: "";
+  clear: both;
+  display: table;
+}
 
     /*
   The sidebar styling has them "expanded" by default, we use CSS transforms to push them offscreen
@@ -98,19 +114,62 @@ body { margin: 0; padding: 0; }
     .right.collapsed {
         transform: translateX(395px);
     }
+   
+/*    flex items */
+    .flex-row {
+      display: flex;
+    }
+
+    .flex-grow {
+      flex-grow: 1;
+    }
+
+
     
+    .flex-item:nth-child(3n+1) {
+/*        background-color: lightyellow;*/
+        width: 20%;
+    }
+    
+    .flex-item:nth-child(3n+2) {
+/*        background-color: lightgreen;*/
+        width: 18%;
+        text-align: right;
+        padding-right: 10px;
+    }
+    
+    .flex-item:nth-child(3n+3) {
+/*        background-color: lightpink;*/
+        width: 28%;
+        text-align: right;
+/*        padding-right: 10px;*/
+    }
+    
+/*    header row*/
+    .th{
+        font-weight: bold;
+        text-align: center !important;
+        font-size: 12px !important;
+        line-height: 110%;
+    }
+    
+    .flex-item {
+        font-size:13px;
+            vertical-align: bottom;
+    }
     
 /*    table*/
-.infoTable  {border-collapse:collapse;border-spacing:0;border:none;width: 100%}
-.infoTable td{font-size:14px;}
+.infoTable  {width: 100%;
+    clear:left;}
+/*.infoTable td{font-size:14px;}*/
   overflow:hidden;padding:10px 5px;word-break:normal;}
 .infoTable th{font-size:16px;font-weight:bold;overflow:hidden;padding:10px 5px;text-align:center; line-height: 12px;}
-.infoTable thead{line-height: 15px;}
-.infoTable .left-th{text-align:left}
-.infoTable .col2{text-align:right;vertical-align:bottom;padding:5px}
-.infoTable .col1{text-align:left;vertical-align:top;padding:5px}
-.infoTable .numeric{text-align:right;vertical-align:bottom;padding:5px}
-
+/*.infoTable thead{line-height: 100%;}*/
+/*.infoTable .left-th{text-align:left}*/
+/*.infoTable .col2{text-align:right;vertical-align:bottom;padding:5px}*/
+/*.infoTable .col1{text-align:left;vertical-align:top;padding:5px}*/
+/*.infoTable .numeric{text-align:right;vertical-align:bottom;padding:5px}*/
+.click {font-size: smaller;font-style: italic; line-height: 80%;}
 /*    end table */
     
 /*    legend dots */
@@ -123,85 +182,267 @@ body { margin: 0; padding: 0; }
     
 /*    end ledeng dots*/
     
+ 
+/* The switch - the box around the slider */
+    input[type="checkbox" i]{
+        margin-bottom: 0 !important;
+        bottom:0;
+    }    
     
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 20px;
+  height: 11.3px;
+  margin-right: 0.5em;
+/*    bottom:0;*/
+    margin-left: 5px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 8.6px;
+  width: 8.6px;
+  left: 1.3px;
+  bottom: 1.3px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(8.6px);
+  -ms-transform: translateX(8.6px);
+  transform: translateX(8.6px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 17px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+#Lithium_Reserves_Label{
+    
+}
     
 </style>
 
 <div id="map">
     <div id="left" class="sidebar flex-center left collapsed">
         <div class="sidebar-content rounded-rect flex-center">
-
-            <div class="sidebar-content-inner" >
+            <div class="sidebar-content-inner " >
                 <div id="close-sidebar-button" class="sidebar-toggle close" onclick="toggleSidebar('left')">
                 X
+                </div>
+                
+                <img id="wilson_logo" src="img/Wilson%20Center%20-%20Supply%20Chain%20Initiative.svg" alt="Winsol Center Logo">
+                
+                <div class="infoTable">
+                    <hr>
+                 <div id="header" class="flex-row th" >
+                    <div class="flex-item flex-grow th">
+                      MINERAL
+                    </div>
+                    <div class="flex-item flex-grow th">
+                      WORLD TOTAL
+                    </div>
+                    <div class="flex-item flex-grow th">
+                      SELECTED<br>COUNTRY<br><span id="hover_county" class="click">Click on a country</span>
+                    </div>
+                  </div>
+
+                   <!--  Lithium-->
+                   <div id="sidebar-Lithium-row" class="flex-row left" >
+                    <div class="flex-item flex-grow"> 
+                        <span style="font-weight:bold"><span id="dot_lithium">&#11044; </span>Lithium</span>
+                        
+                        <div id="Lithium_Reserves_Row" class="flex-row mineral-row">
+                        <div class="flex-item flex-grow">
+                          <!-- Switch --> <label class="switch">   <input type="checkbox" id="Lithium_Reserves_cb" onclick="mineralToggle('Lithium','Reserves')" checked>   <span class="slider round"></span></label>Reserves
+                        </div>
+                        <div class="flex-item flex-grow">
+                          21,055,000 mt
+                        </div>
+                        <div id="selected_LithiumReserves" class="flex-item flex-grow">
+                        </div>
+                        </div>
+                        
+                        <div id="Lithium_Refining_Row" class="flex-row mineral-row">
+                            <div class="flex-item flex-grow">
+                               <!-- Switch --> <label class="switch">   <input type="checkbox" id="Lithium_Refining_cb" onclick="mineralToggle('Lithium','Refining')" checked>   <span class="slider round"></span></label>Refining
+                            </div>
+                            <div class="flex-item flex-grow">
+                              350,020 mt
+                            </div>
+                            <div id="selected_LithiumRefining" class="flex-item flex-grow">
+                                <!-- sectional value fills here -->
+                            </div>
+                        </div>
+                       </div>
+                    </div>
+                        
+                    <!-- Cobalt-->
+                    <div id="sidebar-Cobalt-row" class="flex-row left" >
+                    <div class="flex-item flex-grow"> 
+                        <span style="font-weight:bold"><span id="dot_cobalt">&#11044;  </span>Cobalt</span>
+                        
+                        <div id="Cobalt_Reserves_Row" class="flex-row mineral-row sidebar-selection">
+                        <div class="flex-item flex-grow">
+                          <!-- Switch --> <label class="switch">   <input type="checkbox" id="Cobalt_Reserves_cb" onclick="mineralToggle('Cobalt','Reserves')" >   <span class="slider round"></span></label>Reserves
+                        </div>
+                        <div class="flex-item flex-grow">
+                          7,128,000 mt
+                        </div>
+                        <div id="selected_CobaltReserves" class="flex-item flex-grow">
+                            <!-- value fills here -->
+                        </div>
+                        </div>
+                        <div id="Cobalt_Processing_Row" class="flex-row mineral-row sidebar-selection">
+                            <div class="flex-item flex-grow">
+                               <!-- Switch --> <label class="switch">   <input type="checkbox" id="Cobalt_Processing_cb" onclick="mineralToggle('Cobalt','Processing')" >   <span class="slider round"></span></label>Processing
+                            </div>
+                            <div class="flex-item flex-grow">
+                              131,434 mt mt
+                            </div>
+                            <div id="selected_CobaltProcessing" class="flex-item flex-grow">
+                                <!-- value fills here -->
+                            </div>
+                        </div>
+                    </div>
+                  </div>
+                    
+                    <!-- Copper -->
+                    <div id="sidebar-Copper-row" class="flex-row left" >
+                    <div class="flex-item flex-grow"> 
+                        <span style="font-weight:bold"><span id="dot_copper">&#11044;  </span>Copper</span>
+                        
+                        <div id="Copper_Reserves_Row" class="flex-row mineral-row sidebar-selection">
+                        <div class="flex-item flex-grow">
+                          <!-- Switch --> <label class="switch">   <input type="checkbox" id="Copper_Reserves_cb" onclick="mineralToggle('Copper','Reserves')" >   <span class="slider round"></span></label>Reserves
+                        </div>
+                        <div class="flex-item flex-grow">
+                          871,000 kt
+                        </div>
+                        <div id="selected_CopperReserves" class="flex-item flex-grow">
+                            <!-- value fills here -->
+                        </div>
+                        </div>
+                        <div id="Copper_Refining_Row" class="flex-row mineral-row sidebar-selection">
+                            <div class="flex-item flex-grow">
+                               <!-- Switch --> <label class="switch">   <input type="checkbox" id="Copper_Refining_cb" onclick="mineralToggle('Copper','Refining')" >   <span class="slider round"></span></label>Refining
+                            </div>
+                            <div class="flex-item flex-grow">
+                              23,615 kt
+                            </div>
+                            <div id="selected_CopperRefining" class="flex-item flex-grow">
+                                <!-- value fills here -->
+                            </div>
+                        </div>
+                    </div>
+                  </div>  
+                    
+                    <!-- Nickel -->
+                    <div id="sidebar-Nickel-row" class="flex-row left" >
+                    <div class="flex-item flex-grow"> 
+                        <span style="font-weight:bold"><span id="dot_nickel">&#11044;  </span>Nickel</span>
+                        
+                        <div id="Nickel_Reserves_Row" class="flex-row mineral-row sidebar-selection">
+                        <div class="flex-item flex-grow">
+                          <!-- Switch --> <label class="switch">   <input type="checkbox" id="Nickel_Reserves_cb" onclick="mineralToggle('Nickel','Reserves')" >   <span class="slider round"></span></label>Reserves
+                        </div>
+                        <div class="flex-item flex-grow">
+                          93,900,000 kt
+                        </div>
+                        <div id="selected_NickelReserves" class="flex-item flex-grow">
+                            <!-- value fills here -->
+                        </div>
+                        </div>
+                        <div id="Nickel_Refining_Row" class="flex-row mineral-row sidebar-selection">
+                            <div class="flex-item flex-grow">
+                               <!-- Switch --> <label class="switch">   <input type="checkbox" id="Nickel_Refining_cb" onclick="mineralToggle('Nickel','Refining')" >   <span class="slider round"></span></label>Refining
+                            </div>
+                            <div class="flex-item flex-grow">
+                              2,414 kt
+                            </div>
+                            <div id="selected_NickelRefining" class="flex-item flex-grow">
+                                <!-- value fills here -->
+                            </div>
+                        </div>
+                    </div>
+                  </div>  
+                    
+                    <!-- Rare Earth -->
+                    <div id="sidebar-Rare Earth-row" class="flex-row left" >
+                    <div class="flex-item flex-grow"> 
+                        <span style="font-weight:bold"><span id="dot_rare">&#11044;  </span>Rare Earth</span>
+                        
+                        <div id="Rare Earth_Reserves_Row" class="flex-row mineral-row sidebar-selection">
+                        <div class="flex-item flex-grow">
+                          <!-- Switch --> <label class="switch">   <input type="checkbox" id="Rare Earth_Reserves_cb" onclick="mineralToggle('Rare Earth','Reserves')" >   <span class="slider round"></span></label>Reserves
+                        </div>
+                        <div class="flex-item flex-grow">
+                          115,820,000 mt
+                        </div>
+                        <div id="selected_Rare EarthReserves" class="flex-item flex-grow">
+                            <!-- value fills here -->
+                        </div>
+                        </div>
+                        <div id="Rare Earth_Refining_Row" class="flex-row mineral-row sidebar-selection">
+                            <div class="flex-item flex-grow">
+                               <!-- Switch --> <label class="switch">   <input type="checkbox" id="Rare Earth_Refining_cb" onclick="mineralToggle('Rare Earth','Refining')" >   <span class="slider round"></span></label>Refining
+                            </div>
+                            <div class="flex-item flex-grow">
+                              46,095 kt
+                            </div>
+                            <div id="selected_Rare EarthRefining" class="flex-item flex-grow">
+                                <!-- value fills here -->
+                            </div>
+                        </div>
+                    </div>
+                  </div>  
+                    
+                </div>
+                
             </div>
-                
-                <img src="img/Wilson%20Center%20-%20Supply%20Chain%20Initiative.svg" alt="Winsol Center Logo"><hr>
-            <table class="infoTable">
-            <thead>
-              <tr>
-                <th class="left-th">MINERAL</th>
-                <th>WORLD TOTAL</th>
-                <th>SELECTED<br>COUNTRY<br><span id="hover_county" style="font-style:italic">Click on a country</span></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr id="sidebar-Lithium-row">
-                <td class="col1"><input type="checkbox" id="Lithium_cb" onclick="mineralToggle('Lithium'),''" checked><span style="font-weight:bold"><span id="dot_lithium">&#11044; </span>Lithium</span><br>Reserves<br>Refining<br>
-                <td class="numeric">21,055,000 mt<br>350,020 mt</td>
-                <td class="numeric"><span id="selected_LithiumReserves"></span><br><span id="selected_LithiumRefining"></span></td>
-              </tr>
-              <tr id="sidebar-Cobalt-row" class="sidebar-selection">
-                <td class="col1"><input type="checkbox" id="Cobalt_cb" onclick="mineralToggle('Cobalt'),''"><span style="font-weight:bold"><span id="dot_cobalt">&#11044; </span>Cobalt</span>
-                    <br>Reserves
-                    <br>Processing<br>
-                <td class="col2">7,128,000 mt<br>131,434 mt<br></td>
-                <td class="numeric"><span id="selected_CobaltReserves"></span><br><span id="selected_CobaltProcessing"></span></td>
-              </tr>
-              <tr id="sidebar-Copper-row" class="sidebar-selection">
-                <td class="col1"><input type="checkbox" id="Copper_cb" onclick="mineralToggle('Copper'),''"><span style="font-weight:bold"><span id="dot_copper">&#11044; </span>Copper</span><br>Reserves<br>Refining</td>
-                <td class="numeric">871,000 kt<br>23,615 kt</td>
-                  <td class="numeric"><span id="selected_CopperReserves"></span><br><span id="selected_CopperProcessing"></span><span id="selected_CopperRefining"></span></td>
-              </tr>
-              <tr id="sidebar-Nickel-row" class="sidebar-selection">
-                <td class="col1"><input type="checkbox" id="Nickel_cb" onclick="mineralToggle('Nickel'),''"><span style="font-weight:bold"><span id="dot_nickel">&#11044; </span>Nickel</span><br>Reserves<br>Refining</td>
-                <td class="numeric"> 93,900,000 kt<br>2,414 kt</td>
-                <td class="numeric"><span id="selected_NickelReserves"></span><br><span id="selected_NickelProcessing"></span><span id="selected_NickelRefining"></span></td>
-              </tr>
-              <tr id="sidebar-Rare Earth-row" class="sidebar-selection">
-                <td class="col1"><input type="checkbox" id="Rare Earth_cb" onclick="mineralToggle('Rare Earth'),''" ><span style="font-weight:bold"><span id="dot_rare">&#11044; </span>Rare Earth</span><br>Reserves<br>Refining</td>
-                <td class="numeric"> 115,820,000 mt<br>46,095 kt</td>
-                <td class="numeric"><span id="selected_Rare EarthReserves"></span><br><span id="selected_Rare EarthProcessing"></span><span id="selected_Rare EarthRefining"></span></td>
-              </tr>
-              <tr>
-                  
-                  <!-- checkboxes for the processing type-->
-                  <input type="checkbox" id="Reserves_cb" onclick="mineralToggle('','Reserves')" checked>Reserves
-                  <input type="checkbox" id="Processing_cb" onclick="mineralToggle('','Processing')" checked>Processing
-                  <input type="checkbox" id="Refining_cb" onclick="mineralToggle('','Refining')" checked>Refining
-                  
-              </tr>
-                
-                
-            </tbody>
-            </table>
-            </div>
-<!--            expand/collapse arrow-->
+<!--        expand/collapse arrow-->
             <div id="expand-sidebar-button" class="sidebar-toggle rounded-rect left" onclick="toggleSidebar('left')">
                 &rarr;
             </div>
         </div>
     </div>
-<!--
-    <div id="right" class="sidebar flex-center right collapsed">
-        <div class="sidebar-content rounded-rect flex-center">
-            Right Sidebar
-            <div class="sidebar-toggle rounded-rect right" onclick="toggleSidebar('right')">
-                &larr;
-            </div>
-        </div>
-    </div>
--->
 </div>
 
 <script>
@@ -222,10 +463,14 @@ body { margin: 0; padding: 0; }
     });
 
     // Mineral list within map
-    //    var displayMinerals = ["Copper", "Cobalt", "Nickel", "Lithium", "Rare Earth"];
+//    var allMinerals = ["Copper", "Cobalt", "Nickel", "Lithium", "Rare Earth"];
     var displayMinerals = ["Lithium"];// "Copper", "Cobalt", "Nickel", "Rare Earth"];
     var displayProcessingType = ["Reserves", "Refining", "Processing"];
+    
+    var displayList = [["Lithium","Reserves"],["Lithium","Refining"]];
 
+    
+    
     // sidebar slide functionality
     function toggleSidebar(id) {
         const elem = document.getElementById(id);
@@ -238,9 +483,8 @@ body { margin: 0; padding: 0; }
         padding[id] = collapsed ? 0 : 300; // 0 if collapsed, 300 px if not. This matches the width of the sidebars in the .sidebar CSS class.
         collapsed ?  sb_button.style.display = "flex" : sb_button.style.display = "none"; // display button if collapsed, hide if not.
         
-        
-        
-        // Use `map.easeTo()` with a padding option to adjust the map's center accounting for the position of sidebars.
+    
+        // Adjust the map's center accounting for the position of sidebars.
         map.easeTo({
             padding: padding,
             duration: 1000 // In ms. This matches the CSS transition duration property.
@@ -255,10 +499,10 @@ body { margin: 0; padding: 0; }
 //        populateWorldTotals();  TO AUTOMATE!
         
         map.on('click', function(e) {
-//            let l = map.getStyle().layers; // get all the layers of the style
-//             console.log(l)
+            // let l = map.getStyle().layers; // get all the layers of the style for working with any additional layers
+            // console.log(l)
              
-             // clear panel
+             // clear panel/hover
              document.getElementById('hover_county').innerHTML = "&nbsp"
              var displayMinerals = ["Copper", "Cobalt", "Nickel", "Lithium", "Rare Earth"];
             
@@ -270,7 +514,7 @@ body { margin: 0; padding: 0; }
                     };
                  });
               }; // end for display minerals
-
+              
             var clickedFeature = map.queryRenderedFeatures(e.point, {
                 layers: ['wilsonminerals','country-boundaries'] // filter for features in this layer
             }); 
@@ -279,17 +523,9 @@ body { margin: 0; padding: 0; }
                 thisFeatureProps = clickedFeature[0].properties
                 //console.log(thisFeatureProps)
                 
-//                var thisCountry;
                 // Check for "Country" field - implying Mineral layer was clicked
                 // or for "name_en" field - implying the country layer was clicked
-//                if (typeof thisFeatureProps.Country !== 'undefined') {
-//                    thisCountry = thisFeatureProps.Country
-//                } else if (typeof thisFeatureProps.name_en !== 'undefined') {
-//                    thisCountry = thisFeatureProps.name_en    
-                     
-                    var thisCountry = (typeof thisFeatureProps.Country !== 'undefined') ? thisFeatureProps.Country : thisFeatureProps.name_en; 
-                    
-
+                var thisCountry = (typeof thisFeatureProps.Country !== 'undefined') ? thisFeatureProps.Country : thisFeatureProps.name_en; 
                 
                 // get realted data vaues for selected country
                 const relatedData = map.querySourceFeatures("composite", {
@@ -319,10 +555,16 @@ body { margin: 0; padding: 0; }
             closeOnClick: false
         });
         
-        // sort layer with smallest items on top
+        // sort items in wilsonminerals layer with smallest items on top
         map.setLayoutProperty('wilsonminerals','circle-sort-key',["*", -1, ["get", "Percent"]])
-        // start map only showing lithium, per request. NOTE: if changing this filter, set the checkboxes to match
-        map.setFilter('wilsonminerals', ['in', 'Mineral','Lithium']);
+        
+        // keep track of map's current filter
+        // start map only showing checked boxes
+        var mapFilter =  [];
+        var args = pollCheckboxes();
+        mapFilter = buildFilter(args);
+        map.setFilter('wilsonminerals',['any', mapFilter]);
+
         
         map.on('mouseenter', 'wilsonminerals', (e) => {
             // Change the cursor style as a UI indicator.
@@ -353,26 +595,31 @@ body { margin: 0; padding: 0; }
         
         map.on('mousemove', 'country-boundaries', (e) => {
             thisCountry = e.features[0].properties.name_en;
-            console.log(thisCountry)
+//            console.log(thisCountry)
             
-            var mineralFilter=[
-                "all",
-                ["in", 'Mineral'].concat(displayMinerals),
-                ["in", "Res_Ref_Proc"].concat(displayProcessingType),
-                ['==', 'Country', getWilsonCountries(thisCountry)]
-            ]
+//            //clear filter
+//            var mineralFilter = "";
+//            // filter map for all currently checked minerals
+//            var args = pollCheckboxes();
+//            mapFilter = buildFilter(args);
+//            map.setFilter('wilsonminerals',['any', mapFilter]);
             
-             
-            // get realted data vaues for selected country
+//            console.log(mapFilter)
+            // limit mouse interaction to countries found in the current filter
+            var mouseFilter = ('all',mapFilter,['==', 'Country', getWilsonCountries(thisCountry)])
+            //console.log(mouseFilter)
+          
+            // get realted mineral data vaues for selected country
             const relatedData = map.querySourceFeatures("composite", {
                 sourceLayer: "WilsonMinerals4-0hbtuj",
-                filter: mineralFilter
+                filter: mouseFilter
             });
 
-            //   console.log(relatedData)
+//               console.log(relatedData.length)
             
             
-            if ( relatedData.length > 0 ){                             
+            if ( relatedData.length > 0 ){   
+//                console.log(relatedData)
                 // Change the cursor style as a UI indicator.
                 map.getCanvas().style.cursor = 'pointer';
                 const description = '<b>'+ thisCountry + '</b><br><i> Click to view details</i>';             
@@ -383,6 +630,9 @@ body { margin: 0; padding: 0; }
                 // Populate the popup and set its coordinates
                 // based on the feature found.
                 popup.setLngLat(coordinates[0]).setHTML(description).addTo(map);
+            } 
+            else {
+                 popup.remove();
             }
         }); // end on mouseenter
         
@@ -397,59 +647,66 @@ body { margin: 0; padding: 0; }
 
     
     function mineralToggle(thisMineral,thisType){
-//        console.log(thisMineral)
-//        console.log(thisType)
-//        console.log(thisMineral+"_cb")
-//        console.log(thisMineral+" " + thisType)
-        
-        // get minerals
-        if(thisMineral != ""){
-            if(document.getElementById(thisMineral+"_cb").checked == false ) {
-                // remove item from array 
-                displayMinerals = displayMinerals.filter(function(item) {
-                    return item !== thisMineral
-                })
-                // grey out row in table
-                var element = document.getElementById("sidebar-"+thisMineral+"-row");
-                element.classList.add("sidebar-selection");
-            } else { 
-                // add item to array
-                displayMinerals.push(thisMineral)
-                // darken row in table
-                var element = document.getElementById("sidebar-"+thisMineral+"-row");
-                element.classList.remove("sidebar-selection");
-            }
-        }
-        
-        // get type
-       if(typeof thisType !== 'undefined'){
-            if(document.getElementById(thisType+"_cb").checked == false ) {
-                // remove item from array 
-                displayProcessingType = displayProcessingType.filter(function(item) {
-                    return item !== thisType
-                })
-            } else { 
-                // add item to array
-                displayProcessingType.push(thisType)
-            }
-       }
-            
-        
-        // filter map for values in displayMinerals array
-        // map.setFilter('wilsonminerals', ['in', 'Mineral'].concat(displayMinerals));   // by mineral type alone 
-        var mineralFilter=[
-            "all",
-            ["in", 'Mineral'].concat(displayMinerals),
-            ["in", "Res_Ref_Proc"].concat(displayProcessingType),
-        ]
-//        console.log("filtering minerals: " + displayMinerals)
-//        console.log("filtering type: " + displayProcessingType)
-        
-        map.setFilter('wilsonminerals', mineralFilter)
-        
+        //reset map
+        var args = pollCheckboxes();
+        mapFilter = buildFilter(args);
+        map.setFilter('wilsonminerals',['any', mapFilter]);
         
     };// end mineral toggle
     
+    
+    function pollCheckboxes(){
+        //clear filter
+         var args = []; 
+
+        // poll checkboxes
+        if (document.getElementById('Lithium_Reserves_cb').checked == true){
+            args.push(["all", ['==', 'Mineral', "Lithium"],['==', "Res_Ref_Proc", "Reserves"]])
+        } 
+        if (document.getElementById('Lithium_Refining_cb').checked == true){
+            args.push(["all", ['==', 'Mineral', "Lithium"],['==', "Res_Ref_Proc", "Refining"]])
+        }
+        if (document.getElementById('Cobalt_Reserves_cb').checked == true){
+            args.push(["all", ['==', 'Mineral', "Cobalt"],['==', "Res_Ref_Proc", "Reserves"]])
+        } 
+        if (document.getElementById('Cobalt_Processing_cb').checked == true){            
+            args.push(["all", ['==', 'Mineral', "Cobalt"],['==', "Res_Ref_Proc", "Processing"]])
+        }
+        if (document.getElementById('Copper_Reserves_cb').checked == true){
+            args.push(["all", ['==', 'Mineral', "Copper"],['==', "Res_Ref_Proc", "Reserves"]])
+        }
+        if (document.getElementById('Copper_Refining_cb').checked == true){
+            args.push(["all", ['==', 'Mineral', "Copper"],['==', "Res_Ref_Proc", "Refining"]])
+        } 
+        if (document.getElementById('Nickel_Reserves_cb').checked == true){
+            args.push(["all", ['==', 'Mineral', "Nickel"],['==', "Res_Ref_Proc", "Reserves"]])
+        }
+        if (document.getElementById('Nickel_Refining_cb').checked == true){
+            args.push(["all", ['==', 'Mineral', "Nickel"],['==', "Res_Ref_Proc", "Refining"]])
+        } 
+        if (document.getElementById('Rare Earth_Reserves_cb').checked == true){
+            args.push(["all", ['==', 'Mineral', "Rare Earth"],['==', "Res_Ref_Proc", "Reserves"]])
+        }
+        if (document.getElementById('Rare Earth_Refining_cb').checked == true){
+            args.push(["all", ['==', 'Mineral', "Rare Earth"],['==', "Res_Ref_Proc", "Refining"]])
+        } 
+        
+        return args;
+    }
+     
+    function buildFilter(arr) {
+          var filter = ['any'];
+
+          if (arr.length === 0) {
+             return filter;
+          }
+
+          for(var i = 0; i < arr.length; i += 1) {
+            filter.push(arr[i]);
+          }
+
+          return filter;
+    }
 
     function getUniqueFeatures(features, scale) {
         const uniqueItems = new Set();
@@ -489,6 +746,21 @@ body { margin: 0; padding: 0; }
         }    
         return uniqueFeatures;
     }
+    
+    
+    function updateThisLabelColor(thisMineral, type){
+        if(document.getElementById(thisMineral+"_"+type+"_cb").checked == true){
+                            // darken row in table
+                            var element = document.getElementById(thisMineral+"_"+type+"_Row");
+                            element.classList.remove("sidebar-selection");
+                        } else {     
+                            // grey out row in table
+                            var element = document.getElementById(thisMineral+"_"+type+"_Row");
+                            element.classList.add("sidebar-selection");
+                     }
+        
+    }
+    
     
     function populateWorldTotals(){
         
