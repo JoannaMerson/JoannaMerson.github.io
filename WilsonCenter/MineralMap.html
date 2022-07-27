@@ -647,6 +647,7 @@ input:checked + .slider:before {
 
     
     function mineralToggle(thisMineral,thisType){
+        updateThisLabelColor(thisMineral,thisType)
         //reset map
         var args = pollCheckboxes();
         mapFilter = buildFilter(args);
