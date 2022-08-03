@@ -491,12 +491,11 @@ input:checked + .slider:before {
     });
     
     map.addControl(new mapboxgl.AttributionControl({
-        customAttribution: ' <a href="https://tombolomapsdesign.com/" target="_blank">Tombolo Maps</a> '
+        customAttribution: ' <a href="https://tombolomapsdesign.com/" target="_blank">Tombolo Maps & Design</a> '
     }));
 
     // Mineral list within map
     var allMinerals = ["Copper", "Cobalt", "Nickel", "Lithium", "Rare Earth"];
-//    var displayMinerals = ["Lithium"];// "Copper", "Cobalt", "Nickel", "Rare Earth"];
     var displayProcessingType = ["Reserves", "Refining", "Processing"];
     
 
@@ -592,7 +591,7 @@ input:checked + .slider:before {
         var mapFilter =  [];
         var args = pollCheckboxes('undefined');
         mapFilter = buildFilter(args);
-        console.log(mapFilter)
+        // console.log(mapFilter)
         map.setFilter('wilsonminerals',['any', mapFilter]);
 
         
@@ -602,7 +601,7 @@ input:checked + .slider:before {
 
             // Copy coordinates array.
             const coordinates = e.features[0].geometry.coordinates.slice();
-            const description = '<b>'+e.features[0].properties.Country + '</b><br><i> Click to view details</i>';
+            const description = '<b>'+e.features[0].properties.Country + '</b><br><i> Click country for details</i>';
 
             // Ensure that if the map is zoomed out such that multiple
             // copies of the feature are visible, the popup appears
@@ -615,7 +614,7 @@ input:checked + .slider:before {
             // based on the feature found.
             popup.setLngLat(coordinates).setHTML(description).addTo(map);
             
-//            console.log(coordinates)
+            //  console.log(coordinates)
         }); // end on mouseenter
 
         map.on('mouseleave', 'wilsonminerals', () => {
@@ -625,10 +624,10 @@ input:checked + .slider:before {
         
         map.on('mousemove', 'country-boundaries', (e) => {
             thisCountry = e.features[0].properties.name_en;
-//            console.log(thisCountry)
+            // console.log(thisCountry)
             
 
-//          // filter map for all currently checked minerals
+            // filter map for all currently checked minerals
             var args = pollCheckboxes(getWilsonCountries(thisCountry));
             mouseFilter = buildFilter(args);
           
@@ -638,14 +637,14 @@ input:checked + .slider:before {
                 filter: mouseFilter
             });
 
-//               console.log(relatedData.length)
+            // console.log(relatedData.length)
             
             
             if ( relatedData.length > 0 ){   
-//                console.log(relatedData)
+                // console.log(relatedData)
                 // Change the cursor style as a UI indicator.
                 map.getCanvas().style.cursor = 'pointer';
-                const description = '<b>'+ thisCountry + '</b><br><i> Click to view details</i>';             
+                const description = '<b>'+ thisCountry + '</b><br><i> Click country for details</i>';             
                  
                 // Create coordinates array.
                 const coordinates = [relatedData[0].geometry.coordinates]
@@ -661,7 +660,6 @@ input:checked + .slider:before {
             map.getCanvas().style.cursor = '';
             popup.remove();
         }); // end on mouseleave 
-        
         
     }); // end on load
     
@@ -687,7 +685,8 @@ input:checked + .slider:before {
         });
         
         totalFeatures = getUniqueFeatures(globalFeatures, "global-level");
-    
+        // console.log(totalFeatures)
+        
         for (feature of totalFeatures){
             thisMineral = feature.properties["Mineral"];
             thisType = feature.properties["Res_Ref_Proc"]
@@ -727,18 +726,15 @@ input:checked + .slider:before {
     }
 
     function getUniqueFeatures(features, scale) {
+
+        // Because features come from tiled vector data, feature
+        // geometries may be split or duplicated across tile boundaries.
+        // As a result, features may appear multiple times in query results.
         const uniqueItems = new Set();
-
-
-        // Because features come from tiled vector data,
-        // feature geometries may be split
-        // or duplicated across tile boundaries.
-        // As a result, features may appear
-        // multiple times in query results.
         const uniqueFeatures = [];
         for (const feature of features){ 
             const concatItem = feature.properties["Mineral"] + feature.properties["Res_Ref_Proc"];
-            // check for combo of Country, Mineral, and Resource Type in the list
+            // check for combo of Mineral, and Resource Type in the list
             if (!uniqueItems.has(concatItem)) {
                 uniqueItems.add(concatItem);
                 uniqueFeatures.push(feature);
@@ -777,37 +773,81 @@ input:checked + .slider:before {
     
     
     function populateWorldTotals(){
+        //for removing duplicates from tiled data
+        const uniqueData = new Set(); // add
+        const uniqueFeatures = []; // push
         
         // get data vaues from mineral layer for whole world 
         const globalFeatures = map.querySourceFeatures("composite", {
             sourceLayer: "WilsonMinerals4-0hbtuj",
         });
+        // console.log(globalFeatures)
         
-        totalFeatures = getUniqueFeatures(globalFeatures, "global-level");
-        // console.log(totalFeatures)
+        //for removing duplicates from tiled data
+        for (const feature of globalFeatures){
+             const concatItem = feature.properties["Mineral"]+feature.properties["Res_Ref_Proc"]+ feature.properties["Unit"]+feature.properties["Country"];  // check for combo of Country, Mineral, and Resource Type in the list
+                                    
+             if (!uniqueData.has(concatItem)) {
+                 uniqueData.add(concatItem); // push the unique item combo name into the tracking array
+                 uniqueFeatures.push(feature); // add the actual feature to the set
+                
+             }
+        }
+            
+        // console.log(uniqueData) // log unique data for review
+        // console.log(uniqueFeatures) // log unique data for review
         
-
-        for (feature of totalFeatures){
+        // for finding unique combinations of mineral/type
+        const uniqueCombos = new Set(); // add
+        const uniqueComboFeatures = []; // push
+        
+        
+        for (const feature of uniqueFeatures){
+               
+                const concatItem = feature.properties["Mineral"] + feature.properties["Res_Ref_Proc"]+feature.properties["Unit"];
             
-
-            
-            thisMineral = feature.properties["Mineral"];
-            thisType = feature.properties["Res_Ref_Proc"]
-            thisAmount = feature.properties["Amount"].toLocaleString() + " " + feature.properties["Unit"];
-            thisAmount = thisAmount.replace("kilotons", "kt"); // update units if found
-            thisAmount = thisAmount.replace("metric tons", "mt"); // update units if found
-                            
-            // populate values in table if it exists                
-            var elem = document.getElementById(thisMineral+"_"+thisType+"_worldTotal")
-            if(elem !== null && elem !== 'undefined' ) {                       
-                document.getElementById(thisMineral+"_"+thisType+"_worldTotal").innerHTML = thisAmount;
+                // check for combo of Mineral and Resource Type in the list
+                if (!uniqueCombos.has(concatItem)) {
+                     uniqueCombos.add(concatItem); uniqueComboFeatures.push([feature.properties["Mineral"],feature.properties["Res_Ref_Proc"], feature.properties["Unit"]]);
+                     // console.log(concatItem)             
+                 }
             }
-            
-        }        
+                        
+            // console.log(uniqueComboFeatures)
+        
+            // for each unqie set of mineral/property, filter for that combo
+            for (features of uniqueComboFeatures){
+                    var thisMineral = features[0]
+                    var thisType = features[1]
+                    var thisUnit = features[2]
+                    
+                    // filter the cleaned up array (duplicates removed) for each pair
+                    const thisCombo = uniqueFeatures.filter(obj => {
+                      return (obj.properties["Mineral"] === thisMineral && obj.properties["Res_Ref_Proc"] === thisType);
+                    });
+                    
+                    //console.log(thisCombo)
+                    var totalAmount = thisCombo.reduce(function (accumulator, feature) {
+                      return accumulator + feature.properties.Amount
+                    }, 0);
+                    // console.log(totalAmount)
+                    
+                    
+                    // populate values in table if it exists                
+                    var elem = document.getElementById(thisMineral+"_"+thisType+"_worldTotal")
+                    if(elem !== null && elem !== 'undefined' ) {     
+                        
+                        totalAmount = totalAmount.toLocaleString() + " " + thisUnit;
+                        totalAmount = totalAmount.replace("kilotons", "kt"); // update units if found
+                        totalAmount = totalAmount.replace("metric tons", "mt"); // update units if found
+                        
+                        document.getElementById(thisMineral+"_"+thisType+"_worldTotal").innerHTML = totalAmount;
+                    }               
+                }                    
     }
     
     function getWilsonCountries(thisCountry){
-        // reaplce as needed, only USA for now, but add cases to switch statement for other differences
+        // reaplce as needed, only 2 cases for now, but add cases to switch statement for other differences
          switch(thisCountry) {
              case 'United States':
                thisCountry = 'USA';
@@ -816,7 +856,7 @@ input:checked + .slider:before {
                 thisCountry = 'DRC';
                 break;
              default:
-             // code block
+             // none
         }
         return thisCountry;
     }
